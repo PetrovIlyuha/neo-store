@@ -1,0 +1,40 @@
+{
+  "name": "neo-store",
+  "version": "1.0.0",
+  "description": "E-commerce MERN app",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "server": "nodemon server/server.js",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "data:import": "node server/seed.js",
+    "data:destroy": "node server/seed.js -d"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PetrovIlyuha/neo-store.git"
+  },
+  "keywords": [
+    "MERN"
+  ],
+  "author": "Ilya Petrov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PetrovIlyuha/neo-store/issues"
+  },
+  "homepage": "https://github.com/PetrovIlyuha/neo-store#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "colors": "^1.4.0",
+    "concurrently": "^5.3.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-async-handler": "^1.1.4",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.8",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.2",
+    "nodemon": "^2.0.4"
+  }
+}
