@@ -1,17 +1,6 @@
 main {
   min-height: 80vh;
-  background: #6441a5; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to left,
-    #2a0845,
-    #6441a5
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to left,
-    #2a0845,
-    #6441a5
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+  background: whitesmoke;
   color: rgb(77, 210, 228);
 }
 
@@ -22,6 +11,10 @@ main {
 
 .nav-link {
   color: rgb(76, 223, 113) !important;
+}
+
+.navbar-brand {
+  width: 200px !important;
 }
 
 /* Footer */
@@ -64,4 +57,43 @@ footer {
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
   color: lightgreen !important;
+}
+
+/* Product page */
+
+.list-group-item {
+  background: white;
+  color: rgb(38, 45, 102);
+  box-shadow: 2px 0px 19px rgba(0, 0, 0, 0.14);
+  border: none !important;
+  cursor: pointer;
+}
+
+.list-group-item:hover {
+  color: blue;
+  background: white;
+}
+
+.back-home-button {
+  background: rgba(209, 201, 201, 0.24) !important;
+  color: rgba(97, 97, 179, 0.44);
+  font-size: 1.2rem;
+  border-radius: 0;
+  border: none;
+}
+
+.back-home-button:hover {
+  background: rgb(77, 71, 71) !important;
+  color: white;
+}
+
+.cta-button {
+  background: rgb(177, 23, 108);
+  font-size: 1.2rem;
+  border-radius: 0;
+  border: none;
+}
+
+.cta-button:hover {
+  background: black !important;
 }
