@@ -1,43 +1,64 @@
-import React, { useEffect, useState } from "react"
-import { Col, Row } from "react-bootstrap"
-import Product from "../components/Product"
-import SpinnerLoader from "../components/UIState/SpinnerLoader"
+// 3-rd parties
+import React, { useEffect } from "react";
+import { ToastContainer } from "react-toastify";
+import { Col, Row } from "react-bootstrap";
 
-import axios from "axios"
+import Product from "../components/Product";
+import SpinnerLoader from "../components/UIState/SpinnerLoader";
+import ServerError from "../assets/images/ServerError";
+
+// redux ops
+import { useDispatch, useSelector } from "react-redux";
+import { listProducts } from "../actions/productActions";
 
 const HomeScreen = () => {
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch();
+  const { products, loading, error } = useSelector(state => state.productList);
 
   useEffect(() => {
-    async function fetchProducts() {
-      setLoading(true)
-      const { data } = await axios.get("/api/products")
-      setProducts(data)
-      setLoading(false)
-    }
-    fetchProducts()
-  }, [])
+    dispatch(listProducts());
+  }, [dispatch]);
 
   if (loading) {
-    return <SpinnerLoader />
+    return <SpinnerLoader />;
   }
+
+  if (error) {
+    return (
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%,-50%)",
+        }}>
+        <h2 style={{ color: "darkgray", marginLeft: -10, textAlign: "center" }}>
+          <span style={{ color: "red" }}>{error}</span>
+          <br />
+          We already working on it...
+        </h2>
+        <ServerError />
+      </div>
+    );
+  }
+
   return (
     <>
-      <h1 className='text-center' style={{ color: "black" }}>
-        Latest Products
-      </h1>
-      <Row>
-        {products.length > 0 &&
-          !loading &&
-          products.map(product => (
-            <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-              <Product product={product} />
-            </Col>
-          ))}
-      </Row>
+      {products.length > 0 && !loading && (
+        <>
+          <h1 className='text-center homePageHeader'>Hits</h1>
+          <Row>
+            {products.map(product => (
+              <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+                <Product product={product} />
+              </Col>
+            ))}
+          </Row>
+        </>
+      )}
+      <ToastContainer />
     </>
-  )
-}
+  );
+};
 
-export default HomeScreen
+export default HomeScreen;
