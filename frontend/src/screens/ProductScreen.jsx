@@ -1,28 +1,59 @@
-import React, { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
-import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap"
-import Rating from "../components/Rating"
-import SpinnerLoader from "../components/UIState/SpinnerLoader"
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Image,
+  ListGroup,
+  Row,
+} from "react-bootstrap";
 
-import axios from "axios"
+import Rating from "../components/Rating";
+import SpinnerLoader from "../components/UIState/SpinnerLoader";
+import ServerError from "../assets/images/ServerError";
 
-const ProductScreen = ({ match }) => {
-  // const product = products.find(product => product._id === match.params.id)
-  const [product, setProduct] = useState({})
-  const [loading, setLoading] = useState(false)
+// redux ops
+import { useDispatch, useSelector } from "react-redux";
+import { listProductDetails } from "../actions/productActions";
+
+const ProductScreen = ({ history, match }) => {
+  const [quantity, setQuantity] = useState(1);
+  const dispatch = useDispatch();
+  const { product, loading, error } = useSelector(
+    state => state.productDetails
+  );
 
   useEffect(() => {
-    async function fetchProduct() {
-      setLoading(true)
-      const { data } = await axios.get(`/api/products/${match.params.id}`)
-      setProduct(data)
-      setLoading(false)
-    }
-    fetchProduct()
-  }, [match])
+    dispatch(listProductDetails(match.params.id));
+  }, [dispatch, match]);
+
+  const addToCartHandler = () => {
+    history.push(`/cart/${match.params.id}?quantity=${quantity}`);
+  };
 
   if (loading) {
-    return <SpinnerLoader />
+    return <SpinnerLoader />;
+  }
+
+  if (error) {
+    return (
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%,-50%)",
+        }}>
+        <h2 style={{ color: "darkgray", marginLeft: -10, textAlign: "center" }}>
+          <span style={{ color: "red" }}>{error}</span>
+          <br />
+          We already working on it...
+        </h2>
+        <ServerError />
+      </div>
+    );
   }
   return (
     <div>
@@ -68,8 +99,28 @@ const ProductScreen = ({ match }) => {
                   </Col>
                 </Row>
               </ListGroup.Item>
+              {product.countInStock > 0 && (
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Quantity:</Col>
+                    <Col>
+                      <Form.Control
+                        as='select'
+                        value={quantity}
+                        onChange={e => setQuantity(e.target.value)}>
+                        {[...Array(product.countInStock).keys()].map(value => (
+                          <option key={value + 1} value={value + 1}>
+                            {value + 1}
+                          </option>
+                        ))}
+                      </Form.Control>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+              )}
               <ListGroup.Item>
                 <Button
+                  onClick={addToCartHandler}
                   className='btn-block cta-button'
                   type='button'
                   disabled={product.countInStock === 0}>
@@ -81,7 +132,7 @@ const ProductScreen = ({ match }) => {
         </Col>
       </Row>
     </div>
-  )
-}
+  );
+};
 
-export default ProductScreen
+export default ProductScreen;
