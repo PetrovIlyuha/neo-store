@@ -1,12 +1,18 @@
 main {
-  min-height: 80vh;
+  min-height: 85vh;
   background: whitesmoke;
+  margin-top: 100px;
   color: rgb(77, 210, 228);
 }
 
 /* Header */
 .navbar {
   min-height: 100px;
+  position: fixed;
+  width: 100%;
+  margin-bottom: 100px;
+  top: 0;
+  z-index: 100;
 }
 
 .nav-link {
@@ -31,8 +37,8 @@ footer {
     #414345,
     #232526
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  /* position: fixed;
-  bottom: 0; */
+  position: fixed;
+  bottom: 0;
   height: 70px;
   display: flex;
   flex-direction: column;
@@ -42,21 +48,46 @@ footer {
   width: 100%;
 }
 
+/* Home page */
+.homePageHeader {
+  color: yellow;
+  border-radius: 10px;
+  clip-path: polygon(11% 0, 100% 0, 89% 100%, 0% 100%);
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  opacity: 0.75;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+  width: 30%;
+  margin-bottom: 20px;
+  margin: 0 auto;
+}
+
 /* Product Cards */
 .card {
-  background: #c04848; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to right,
-    #480048,
-    #c04848
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to right,
-    #480048,
-    #c04848
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+  /* background: #c04848;
+  background: -webkit-linear-gradient(to right, #480048, #c04848);
+  background: linear-gradient(to right, #480048, #c04848); */
+  background: linear-gradient(-145deg, whitesmoke 47%, gray);
   color: lightgreen !important;
+  border-top: 1px solid yellow;
+  box-shadow: -3px 3px 22px -3px rgba(0, 0, 0, 0.3);
+}
+
+.productImage {
+  border: 1px solid #34fa6f;
+  box-shadow: 0px 2px 20px -5px rgba(0, 0, 0, 0.3);
+}
+
+.productNameBox {
+  color: rgb(235, 235, 176);
+  min-height: 70px;
+  font-size: 1rem;
+  padding: 3px 0px 3px 30px;
+  width: 105%;
+  margin-left: -10px;
+  line-height: 2rem;
+  background: rgb(51, 25, 25, 0.8);
+  clip-path: polygon(12% 0, 100% 0, 89% 100%, 0% 100%);
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8) !important;
 }
 
 /* Product page */
@@ -96,4 +127,91 @@ footer {
 
 .cta-button:hover {
   background: black !important;
+}
+
+/* Cart page */
+.shopping-cart * {
+  color: rgb(161, 108, 108);
+  position: relative;
+}
+.shopping-cart {
+  margin-bottom: 100px;
+}
+/* common */
+
+.top-heading {
+  color: rgb(100, 82, 82);
+  text-align: center;
+}
+.screen-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  transform: translate(-50%, -50%);
+}
+
+/* Forms */
+.form-container {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Login page */
+.login-form {
+  background: url("./assets/images/login_form_bg.png") center center no-repeat;
+  object-fit: contain;
+  box-shadow: 20px 20px 40px rgba(24, 48, 63, 0.2);
+  border-radius: 20px;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  color: darkblue;
+  font-weight: bold;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 460px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Profile page */
+.update-form {
+  background: #c31432; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #240b36,
+    #c31432
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #240b36,
+    #c31432
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  object-fit: contain;
+  box-shadow: 40px 40px 100px rgba(24, 48, 63, 0.2);
+  border-radius: 20px;
+  color: lightgreen;
+  font-weight: bold;
+}
+
+/* Checkout progress indicator */
+.checkout-tab {
+  clip-path: polygon(91% 0, 100% 50%, 91% 100%, 0% 100%, 7% 50%, 0% 0%);
+  padding: 0px -4px;
+  background-color: #1e41a3 !important;
+  font-weight: bold;
+}
+
+.checkout-tab-disabled {
+  clip-path: polygon(91% 0, 100% 50%, 91% 100%, 0% 100%, 7% 50%, 0% 0%);
+  padding: 0px -4px;
+  opacity: 0.4;
 }
