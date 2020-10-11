@@ -1,5 +1,5 @@
-import mongoose from "mongoose"
-const ObjectID = mongoose.Schema.Types.ObjectId
+import mongoose from "mongoose";
+const ObjectID = mongoose.Schema.Types.ObjectId;
 
 const orderSchema = mongoose.Schema(
   {
@@ -7,7 +7,8 @@ const orderSchema = mongoose.Schema(
     orderItems: [
       {
         name: { type: String, required: true },
-        qty: { type: Number, required: true },
+        quantity: { type: Number, required: true },
+        countInStock: { type: Number },
         image: { type: String, required: true },
         price: { type: Number, required: true },
         product: { type: ObjectID, required: true, ref: "Product" },
@@ -26,6 +27,7 @@ const orderSchema = mongoose.Schema(
       update_time: { type: String },
       email_address: { type: String },
     },
+    itemsPrice: { type: Number, default: 0.0 },
     taxPrice: { type: Number, required: true, default: 0.0 },
     shippingPrice: { type: Number, required: true, default: 0.0 },
     totalPrice: { type: Number, required: true, default: 0.0 },
@@ -34,8 +36,8 @@ const orderSchema = mongoose.Schema(
     isDelivered: { type: Boolean, required: true, default: false },
     deliveredAt: { type: Date },
   },
-  { timestamps: true }
-)
+  { timestamps: true },
+);
 
-const Order = mongoose.model("Order", orderSchema)
-export default Order
+const Order = mongoose.model("Order", orderSchema);
+export default Order;
