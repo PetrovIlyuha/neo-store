@@ -1,16 +1,10 @@
 import React from "react";
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  Image,
-  ListGroup,
-  Row,
-} from "react-bootstrap";
+import { useEffect } from "react";
+import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
-import { addToCart, removeFromCart } from "../actions/cartActions";
+import { createOrder } from "../actions/orderActions";
 import CheckoutStaged from "../components/CheckoutStaged";
 
 const Placement = ({ history }) => {
@@ -20,6 +14,8 @@ const Placement = ({ history }) => {
     shippingAddress: { address, city, postalCode, country },
     paymentMethod,
   } = useSelector(state => state.cart);
+  const { shippingAddress } = useSelector(state => state.cart);
+  const { order, success, error } = useSelector(state => state.orderCreate);
 
   let totalOrderPayment = cartItems.reduce(
     (total, item) => item.price * item.quantity + total,
@@ -35,11 +31,47 @@ const Placement = ({ history }) => {
       return totalOrderPayment * 0.03;
     }
   };
+  let orderTaxation = totalOrderPayment * 0.04;
 
-  let totalOrderCostAfterShipping = (
-    totalOrderPayment + totalShippingPrice(totalOrderPayment)
+  let totalOrderCostAfterShippingAndTaxes = (
+    totalOrderPayment +
+    totalShippingPrice(totalOrderPayment) +
+    orderTaxation
   ).toFixed(2);
 
+  useEffect(() => {
+    if (success) {
+      history.push(`/order/${order._id}`);
+    }
+    if (error) {
+      toast.error(error);
+    }
+    // eslint-disable-next-line
+  }, [history, success, error]);
+
+  const placeOrderHandler = () => {
+    console.log(
+      cartItems,
+      shippingAddress,
+      paymentMethod,
+      totalOrderPayment,
+      totalShippingPrice(totalOrderPayment),
+      +orderTaxation.toFixed(2),
+      +totalOrderCostAfterShippingAndTaxes,
+    );
+
+    dispatch(
+      createOrder({
+        orderItems: cartItems,
+        shippingAddress,
+        paymentMethod,
+        itemsPrice: +totalOrderPayment.toFixed(2),
+        shippingPrice: +totalShippingPrice(totalOrderPayment).toFixed(2),
+        taxPrice: +orderTaxation.toFixed(2),
+        totalPrice: +totalOrderCostAfterShippingAndTaxes,
+      }),
+    );
+  };
   return (
     <>
       <CheckoutStaged step1 step2 step3 step4 />
@@ -57,7 +89,7 @@ const Placement = ({ history }) => {
           <ListGroup variant='flush' className='mt-4'>
             <ListGroup.Item>
               <h5 className='top-heading'>
-                Payment Company: <span>{paymentMethod}</span>
+                Payment Provider: <span>{paymentMethod}</span>
               </h5>
             </ListGroup.Item>
           </ListGroup>
@@ -66,8 +98,8 @@ const Placement = ({ history }) => {
           </h5>
           <ListGroup variant='flush'>
             {cartItems.map(item => (
-              <ListGroup.Item key={item.product} className='my-2'>
-                <Row>
+              <ListGroup.Item key={item.product} className='my-1'>
+                <Row className='checkout-product-details'>
                   <Col md={2}>
                     <Image src={item.image} alt={item.name} fluid rounded />
                   </Col>
@@ -79,7 +111,7 @@ const Placement = ({ history }) => {
                   </Col>
                   <Col md={1} style={{ marginLeft: 40 }}>
                     <span>SubTotal:</span>$
-                    <strong>{item.price * item.quantity}</strong>
+                    <strong>{(item.price * item.quantity).toFixed(2)}</strong>
                   </Col>
                 </Row>
               </ListGroup.Item>
@@ -96,7 +128,7 @@ const Placement = ({ history }) => {
                 <Row>
                   <Col>Items</Col>
                   <Col>
-                    <strong>$ {totalOrderPayment}</strong>
+                    <strong>$ {totalOrderPayment.toFixed(2)}</strong>
                   </Col>
                 </Row>
               </ListGroup.Item>
@@ -112,20 +144,32 @@ const Placement = ({ history }) => {
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
-                  <Col>Total:</Col>
+                  <Col>Tax:</Col>
                   <Col>
-                    <strong>$ {totalOrderCostAfterShipping}</strong>
+                    <strong>$ {orderTaxation.toFixed(2)}</strong>
                   </Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
-                <Button className='btn btn-block bg-light'>Order</Button>
+                <Row>
+                  <Col>Total:</Col>
+                  <Col>
+                    <strong>$ {totalOrderCostAfterShippingAndTaxes}</strong>
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Button
+                  onClick={placeOrderHandler}
+                  className='btn btn-block bg-light'>
+                  Order
+                </Button>
               </ListGroup.Item>
             </ListGroup>
           </Card>
         </Col>
       </Row>
-      <Row></Row>
+      <ToastContainer />
     </>
   );
 };
