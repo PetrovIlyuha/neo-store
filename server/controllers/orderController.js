@@ -33,10 +33,25 @@ const addOrderItems = asyncHandler(async (req, res) => {
       let createdOrder = await newOrder.save();
       res.status(201).json(createdOrder);
     } catch (err) {
-      console.log(req.user._id);
       res.status(401).json({ message: "Order creation failed" });
     }
   }
 });
 
-export { addOrderItems };
+// * @desc Get order by id
+// ? @route GET /api/orders/:id
+// ! access Protected
+const getOrderById = asyncHandler(async (req, res) => {
+  const order = await Order.findById(req.params.id).populate(
+    "user",
+    "name email",
+  );
+  if (order) {
+    res.json(order);
+  } else {
+    res.status(404);
+    throw new Error("Order not found");
+  }
+});
+
+export { addOrderItems, getOrderById };
