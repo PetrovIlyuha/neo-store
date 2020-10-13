@@ -22,7 +22,7 @@ const ProductScreen = ({ history, match }) => {
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
   const { product, loading, error } = useSelector(
-    state => state.productDetails
+    state => state.productDetails,
   );
 
   useEffect(() => {
@@ -73,7 +73,10 @@ const ProductScreen = ({ history, match }) => {
               <h3>{product.name}</h3>
             </ListGroup.Item>
             <ListGroup.Item>
-              <Rating value={product.rating} text={`${product.numReviews}`} />
+              <Rating
+                value={product.rating || 3}
+                text={`${product.numReviews}`}
+              />
             </ListGroup.Item>
             <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
             <ListGroup.Item>Description: ${product.description}</ListGroup.Item>
