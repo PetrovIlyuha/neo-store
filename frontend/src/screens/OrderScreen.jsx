@@ -1,26 +1,60 @@
-import React, { useEffect } from "react";
-import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
-import { compareAsc, format } from "date-fns";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { PayPalButton } from "react-paypal-button-v2";
+import { Card, Col, Image, ListGroup, Row } from "react-bootstrap";
+import { format } from "date-fns";
 
 import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
-import { getOrderDetails } from "../actions/orderActions";
+import { getOrderDetails, payOrder } from "../actions/orderActions";
 import SpinnerLoader from "../components/UIState/SpinnerLoader";
 import AlertMessage from "../components/UIState/AlertMessage";
+import { ORDER_PAY_RESET } from "../constants/orderConstants";
 
 const OrderScreen = ({ match }) => {
   const dispatch = useDispatch();
+  const { loading: loadingPay, success: successPay } = useSelector(
+    state => state.orderPay,
+  );
+  const [sdkReady, setSdkReady] = useState(false);
   const orderId = match.params.id;
   const { order, loading, error } = useSelector(state => state.orderDetails);
+
   useEffect(() => {
-    dispatch(getOrderDetails(orderId));
-  }, []);
+    const addPayPalScript = async () => {
+      const { data: clientId } = await axios.get("/api/config/paypal");
+      const script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+      script.async = true;
+      script.onload = () => {
+        setSdkReady(true);
+      };
+      document.body.appendChild(script);
+    };
+    if (!order || successPay) {
+      dispatch({ type: ORDER_PAY_RESET });
+      dispatch(getOrderDetails(orderId));
+    } else if (!order.isPaid) {
+      if (!window.paypal) {
+        addPayPalScript();
+      } else {
+        setSdkReady(true);
+      }
+    }
+  }, [dispatch, orderId, order, successPay]);
+
   useEffect(() => {
     if (error) {
       toast.error(error.message);
     }
-  }, [order]);
+  }, [error]);
+
+  const successPaypalHandler = paymentResult => {
+    console.log(paymentResult);
+    dispatch(payOrder(orderId, paymentResult));
+  };
   return (
     <>
       {loading ? (
@@ -60,7 +94,8 @@ const OrderScreen = ({ match }) => {
                   </h5>
                   {order.isPaid ? (
                     <AlertMessage variant='success'>
-                      Payment Status: {order.paidAt}
+                      Payment Status: Paid at{" "}
+                      {format(new Date(order.paidAt), "yyyy-MM-dd")}
                     </AlertMessage>
                   ) : (
                     <AlertMessage variant='secondary'>
@@ -142,6 +177,19 @@ const OrderScreen = ({ match }) => {
                       </Col>
                     </Row>
                   </ListGroup.Item>
+                  {!order.isPaid && (
+                    <ListGroup.Item>
+                      {loadingPay && <SpinnerLoader />}
+                      {!sdkReady ? (
+                        <SpinnerLoader />
+                      ) : (
+                        <PayPalButton
+                          amount={order.totalPrice}
+                          onSuccess={successPaypalHandler}
+                        />
+                      )}
+                    </ListGroup.Item>
+                  )}
                 </ListGroup>
               </Card>
             </Col>
