@@ -15,7 +15,7 @@ const PaymentScreen = ({ history }) => {
     if (!shippingAddress) {
       history.push("/shipping");
     }
-  }, []);
+  }, [shippingAddress, history]);
 
   const handleStateChange = e => {
     setPaymentMethod(e.target.value);
