@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col, Table } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserDetails, updateUserProfile } from "../actions/userActions";
+import { showMyOrders } from "../actions/orderActions";
 import SpinnerLoader from "../components/UIState/SpinnerLoader";
 import { toast, ToastContainer } from "react-toastify";
-
+import { format } from "date-fns";
 const ProfileScreen = ({ history, location }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -16,8 +18,11 @@ const ProfileScreen = ({ history, location }) => {
   const { userInfo } = useSelector(state => state.userLogin);
 
   const { loading, error, user } = useSelector(state => state.userDetails);
+  const { loading: loadingMyOrders, orders } = useSelector(
+    state => state.orderMyOrders,
+  );
   const { success } = useSelector(state => state.userUpdateProfile);
-  const redirect = location.search ? location.search.split("=")[1] : "/";
+  // const redirect = location.search ? location.search.split("=")[1] : "/";
 
   useEffect(() => {
     if (!userInfo) {
@@ -27,6 +32,7 @@ const ProfileScreen = ({ history, location }) => {
 
   useEffect(() => {
     dispatch(getUserDetails("profile"));
+    dispatch(showMyOrders());
   }, [dispatch]);
 
   useEffect(() => {
@@ -66,9 +72,7 @@ const ProfileScreen = ({ history, location }) => {
     <Row>
       <Col md={5}>
         <h3 className='top-heading text-center'>User Profile</h3>
-        <Form
-          className='bg-danger p-3 update-form'
-          onSubmit={loginFormSubmitHandler}>
+        <Form className='p-3 update-form' onSubmit={loginFormSubmitHandler}>
           <Form.Group controlId='name'>
             <Form.Label>Name</Form.Label>
             <Form.Control
@@ -107,7 +111,41 @@ const ProfileScreen = ({ history, location }) => {
         </Form>
       </Col>
       <Col md={7}>
-        <h2>Orders</h2>
+        <h2 className='top-heading text-center'>Orders</h2>
+        {loadingMyOrders && <SpinnerLoader />}
+
+        <Table striped bordered hover responsive className='table-sm bg-light'>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>Total Payment</th>
+              <th>Paid</th>
+              <th>Delivered</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders &&
+              orders.map(order => (
+                <tr key={order._id}>
+                  <td>{order._id}</td>
+                  {/* <td>{typeof order.createdAt}</td> */}
+                  <td>{format(new Date(order.createdAt), "yyyy-MM-dd")}</td>
+                  <td>{order.totalPrice}</td>
+                  <td>
+                    {order.isPaid ? order.paidAt.substring(0, 10) : "Not Paid"}
+                  </td>
+                  <td>{order.isDelivered ? "Delivered" : "Delivering"}</td>
+                  <td>
+                    <LinkContainer to={`/order/${order._id}`}>
+                      <Button variant='dark'>Details</Button>
+                    </LinkContainer>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
       </Col>
       <ToastContainer />
     </Row>
