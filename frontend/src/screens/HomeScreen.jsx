@@ -1,5 +1,5 @@
 // 3-rd parties
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { Col, Row } from "react-bootstrap";
 
@@ -15,6 +15,20 @@ const HomeScreen = () => {
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector(state => state.productList);
 
+  const maxProductPrice =
+    products && products.sort((a, b) => b.price - a.price)[0]?.price;
+  const minProductPrice =
+    products && products.sort((a, b) => a.price - b.price)[0]?.price;
+
+  const [filteredPrice, setFilteredPrice] = useState(maxProductPrice || 10000);
+  const [showPriceIndication, setShowPriceIndication] = useState(false);
+
+  useEffect(() => {
+    if (maxProductPrice) {
+      setFilteredPrice(maxProductPrice);
+    }
+  }, [maxProductPrice]);
+
   useEffect(() => {
     dispatch(listProducts());
   }, [dispatch]);
@@ -22,6 +36,11 @@ const HomeScreen = () => {
   if (loading) {
     return <SpinnerLoader />;
   }
+
+  const onPriceRangeChange = e => {
+    setFilteredPrice(e.target.value);
+    setShowPriceIndication(true);
+  };
 
   if (error) {
     return (
@@ -41,18 +60,32 @@ const HomeScreen = () => {
       </div>
     );
   }
-
   return (
     <>
       {products.length > 0 && !loading && (
         <>
           <h1 className='text-center homePageHeader'>Hits</h1>
+          <label htmlFor='price-filter'>Filter by price</label>
+          <input
+            type='range'
+            id='price-filter'
+            value={filteredPrice}
+            min={minProductPrice}
+            max={maxProductPrice}
+            onChange={onPriceRangeChange}
+            onBlur={() => setShowPriceIndication(false)}
+          />{" "}
+          {showPriceIndication && (
+            <h4 style={{ color: "#3f3f3f" }}> &lt; ${filteredPrice}</h4>
+          )}
           <Row>
-            {products.map(product => (
-              <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                <Product product={product} />
-              </Col>
-            ))}
+            {products
+              .filter(item => item.price < filteredPrice)
+              .map(product => (
+                <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+                  <Product product={product} />
+                </Col>
+              ))}
           </Row>
         </>
       )}
