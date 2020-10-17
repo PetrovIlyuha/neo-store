@@ -14,6 +14,9 @@ import {
   USER_REGISTER_FAILURE,
   USER_REGISTER_REQUEST,
   USER_REGISTER_SUCCESS,
+  USER_REMOVE_FAILURE,
+  USER_REMOVE_REQUEST,
+  USER_REMOVE_SUCCESS,
   USER_UPDATE_PROFILE_FAILURE,
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
@@ -85,6 +88,19 @@ export const userListReducer = (state = { users: [] }, { type, payload }) => {
       return { ...state, loading: false, error: payload };
     case USER_LIST_RESET:
       return { ...state, users: [] };
+    default:
+      return state;
+  }
+};
+
+export const userDeleteReducer = (state = {}, { type, payload }) => {
+  switch (type) {
+    case USER_REMOVE_REQUEST:
+      return { ...state, loading: true };
+    case USER_REMOVE_SUCCESS:
+      return { ...state, loading: false, success: true, message: payload };
+    case USER_REMOVE_FAILURE:
+      return { ...state, loading: false, error: payload };
     default:
       return state;
   }
