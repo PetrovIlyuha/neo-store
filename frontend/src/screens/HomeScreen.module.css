@@ -1,0 +1,17 @@
+.categoryFilter {
+  font-weight: bold;
+}
+
+.priceDirection {
+  padding: 10px;
+  margin-bottom: 4rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s linear;
+}
+
+.priceDirection:hover {
+  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.3);
+  background: #99e34a;
+  color: #363b61;
+}
