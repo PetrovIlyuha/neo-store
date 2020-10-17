@@ -4,32 +4,46 @@ import { Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import SpinnerLoader from "../components/UIState/SpinnerLoader";
 import { toast, ToastContainer } from "react-toastify";
-import { listUsers } from "../actions/userActions";
+import { listUsers, deleteUser } from "../actions/userActions";
 
 const UserListScreen = ({ history }) => {
   const dispatch = useDispatch();
   const { loading, error, users } = useSelector(state => state.userList);
   const { userInfo } = useSelector(state => state.userLogin);
-  console.log(userInfo);
+  const { success: deleteSuccess, message } = useSelector(
+    state => state.userDelete,
+  );
+
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
       dispatch(listUsers());
     } else {
       history.push("/login");
     }
-  }, [dispatch, history, userInfo]);
+  }, [dispatch, history, userInfo, deleteSuccess]);
 
   useEffect(() => {
     if (error) {
       toast.error(error.message);
     }
-  }, [error]);
+    if (deleteSuccess) {
+      setTimeout(() => {
+        toast.success(message);
+      }, 2000);
+    }
+  }, [error, deleteSuccess]);
   if (loading) {
     return <SpinnerLoader />;
   }
 
   const deleteHandler = id => {
-    console.log(id);
+    if (id === userInfo._id) {
+      toast.error("You can't delete your account!");
+      return;
+    }
+    if (window.confirm("Are you sure you want to delete this User?")) {
+      dispatch(deleteUser(id));
+    }
   };
 
   return (
