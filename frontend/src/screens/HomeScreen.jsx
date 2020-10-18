@@ -160,7 +160,7 @@ const HomeScreen = () => {
               <div
                 onClick={changePriceOrderFilter}
                 className={styles.priceDirection}>
-                {orderFilter.toString() == maxToMinFilter().toString()
+                {orderFilter.toString() === maxToMinFilter().toString()
                   ? "Price ⬇"
                   : "Price ⬆"}
               </div>
