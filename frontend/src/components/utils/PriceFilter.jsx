@@ -7,7 +7,7 @@ const PriceFilter = ({
   onPriceRangeChange,
 }) => {
   return (
-    <div>
+    <div className='price-filter-wrapper'>
       <label
         htmlFor='price-filter'
         style={{ paddingRight: 10, transform: "translate(120%,-180%)" }}>
