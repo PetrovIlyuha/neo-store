@@ -31,7 +31,7 @@ const UserListScreen = ({ history }) => {
         toast.success(message);
       }, 2000);
     }
-  }, [error, deleteSuccess]);
+  }, [error, deleteSuccess, message]);
   if (loading) {
     return <SpinnerLoader />;
   }
@@ -74,7 +74,7 @@ const UserListScreen = ({ history }) => {
                 )}
               </td>
               <td className='text-center'>
-                <LinkContainer to={`/user/${user.id}/edit`}>
+                <LinkContainer to={`/admin/user/${user._id}/edit`}>
                   <Button className='btn-sm'>
                     <i className='fas fa-edit'></i>
                   </Button>
