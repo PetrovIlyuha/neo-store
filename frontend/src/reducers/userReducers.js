@@ -17,9 +17,13 @@ import {
   USER_REMOVE_FAILURE,
   USER_REMOVE_REQUEST,
   USER_REMOVE_SUCCESS,
+  USER_UPDATE_FAILURE,
   USER_UPDATE_PROFILE_FAILURE,
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_REQUEST,
+  USER_UPDATE_RESET,
+  USER_UPDATE_SUCCESS,
 } from "../constants/userConstants";
 
 export const userLoginReducer = (state = {}, { type, payload }) => {
@@ -101,6 +105,23 @@ export const userDeleteReducer = (state = {}, { type, payload }) => {
       return { ...state, loading: false, success: true, message: payload };
     case USER_REMOVE_FAILURE:
       return { ...state, loading: false, error: payload };
+    default:
+      return state;
+  }
+};
+
+export const userUpdateReducer = (state = {}, { type, payload }) => {
+  switch (type) {
+    case USER_UPDATE_REQUEST:
+      return { ...state, loading: true };
+    case USER_UPDATE_SUCCESS:
+      return { ...state, loading: false, success: true };
+    case USER_UPDATE_FAILURE: {
+      return { ...state, loading: false, error: payload };
+    }
+    case USER_UPDATE_RESET: {
+      return { ...state, user: {} };
+    }
     default:
       return state;
   }
