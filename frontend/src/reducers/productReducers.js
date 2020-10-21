@@ -1,15 +1,26 @@
 import {
+  PRODUCT_CREATE_FAIL,
+  PRODUCT_CREATE_REQUEST,
+  PRODUCT_CREATE_RESET,
+  PRODUCT_CREATE_SUCCESS,
+  PRODUCT_DELETE_FAIL,
+  PRODUCT_DELETE_REQUEST,
+  PRODUCT_DELETE_SUCCESS,
   PRODUCT_DETAILS_FAIL,
   PRODUCT_DETAILS_REQUEST,
   PRODUCT_DETAILS_SUCCESS,
   PRODUCT_LIST_FAIL,
   PRODUCT_LIST_REQUEST,
   PRODUCT_LIST_SUCCESS,
+  PRODUCT_UPDATE_FAIL,
+  PRODUCT_UPDATE_REQUEST,
+  PRODUCT_UPDATE_RESET,
+  PRODUCT_UPDATE_SUCCESS,
 } from "../constants/productConstants.js";
 
 export const productListReducer = (
   state = { products: [] },
-  { type, payload }
+  { type, payload },
 ) => {
   switch (type) {
     case PRODUCT_LIST_REQUEST:
@@ -25,7 +36,7 @@ export const productListReducer = (
 
 export const productDetailsReducer = (
   state = { product: { reviews: [] } },
-  { type, payload }
+  { type, payload },
 ) => {
   switch (type) {
     case PRODUCT_DETAILS_REQUEST:
@@ -35,6 +46,53 @@ export const productDetailsReducer = (
     case PRODUCT_DETAILS_FAIL: {
       return { ...state, loading: false, error: payload };
     }
+    default:
+      return state;
+  }
+};
+
+export const productDeleteReducer = (state = {}, { type, payload }) => {
+  switch (type) {
+    case PRODUCT_DELETE_REQUEST:
+      return { ...state, loading: true };
+    case PRODUCT_DELETE_SUCCESS:
+      return { ...state, loading: false, success: true };
+    case PRODUCT_DELETE_FAIL: {
+      return { ...state, loading: false, error: payload };
+    }
+    default:
+      return state;
+  }
+};
+
+export const productCreateReducer = (state = {}, { type, payload }) => {
+  switch (type) {
+    case PRODUCT_CREATE_REQUEST:
+      return { ...state, loading: true };
+    case PRODUCT_CREATE_SUCCESS:
+      return { ...state, loading: false, success: true, product: payload };
+    case PRODUCT_CREATE_FAIL:
+      return { ...state, loading: false, error: payload };
+    case PRODUCT_CREATE_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const productUpdateReducer = (
+  state = { product: {} },
+  { type, payload },
+) => {
+  switch (type) {
+    case PRODUCT_UPDATE_REQUEST:
+      return { ...state, loading: true };
+    case PRODUCT_UPDATE_SUCCESS:
+      return { ...state, product: payload, success: true, loading: false };
+    case PRODUCT_UPDATE_FAIL:
+      return { ...state, error: payload };
+    case PRODUCT_UPDATE_RESET:
+      return { ...state, product: {}, success: false, loading: false };
     default:
       return state;
   }
