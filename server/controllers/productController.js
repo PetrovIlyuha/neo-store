@@ -75,6 +75,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     countInStock,
   } = req.body;
   const product = await Product.findById(req.params.id);
+
   if (product) {
     product.name = name;
     product.price = price;
