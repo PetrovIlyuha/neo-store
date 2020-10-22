@@ -11,8 +11,14 @@ import {
   ORDER_MY_ORDERS_REQUEST,
   ORDER_MY_ORDERS_SUCCESS,
   ORDER_MY_ORDERS_FAILURE,
-} from "../constants/orderConstants";
-import axios from "axios";
+  ORDER_ALL_REQUEST,
+  ORDER_ALL_SUCCESS,
+  ORDER_ALL_FAILURE,
+  ORDER_DELIVERED_REQUEST,
+  ORDER_DELIVERED_SUCCESS,
+  ORDER_DELIVERED_FAILURE,
+} from '../constants/orderConstants';
+import axios from 'axios';
 export const createOrder = order => async (dispatch, getState) => {
   try {
     dispatch({ type: ORDER_CREATE_REQUEST });
@@ -23,7 +29,7 @@ export const createOrder = order => async (dispatch, getState) => {
     console.log(userInfo);
     const config = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
@@ -74,7 +80,7 @@ export const payOrder = (orderId, paymentResult) => async (
     const config = {
       headers: {
         Authorization: `Bearer ${userInfo.token}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     };
 
@@ -87,6 +93,33 @@ export const payOrder = (orderId, paymentResult) => async (
   } catch (error) {
     dispatch({
       type: ORDER_PAY_FAILURE,
+      payload: error.message,
+    });
+  }
+};
+
+export const deliverOrder = orderId => async (dispatch, getState) => {
+  try {
+    dispatch({ type: ORDER_DELIVERED_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/orders/${orderId}/delivered`,
+      {},
+      config,
+    );
+    dispatch({ type: ORDER_DELIVERED_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: ORDER_DELIVERED_FAILURE,
       payload: error.message,
     });
   }
@@ -110,6 +143,30 @@ export const showMyOrders = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: ORDER_MY_ORDERS_FAILURE,
+      payload: error.message,
+    });
+  }
+};
+
+export const getAllOrders = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: ORDER_ALL_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/orders`, config);
+    console.log(data);
+    dispatch({ type: ORDER_ALL_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: ORDER_ALL_FAILURE,
       payload: error.message,
     });
   }
