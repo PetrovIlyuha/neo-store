@@ -1,18 +1,18 @@
 // 3-rd parties
-import React, { useEffect, useState } from "react";
-import { ToastContainer } from "react-toastify";
-import { Col, Row } from "react-bootstrap";
+import React, { useEffect, useState } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Col, Row } from 'react-bootstrap';
 
-import Product from "../components/Product";
-import SpinnerLoader from "../components/UIState/SpinnerLoader";
-import ServerError from "../assets/images/ServerError";
+import Product from '../components/Product';
+import SpinnerLoader from '../components/UIState/SpinnerLoader';
+import ServerError from '../assets/images/ServerError';
 
 // redux ops
-import { useDispatch, useSelector } from "react-redux";
-import { listProducts } from "../actions/productActions";
-import PriceFilter from "../components/utils/PriceFilter";
+import { useDispatch, useSelector } from 'react-redux';
+import { listProducts } from '../actions/productActions';
+import PriceFilter from '../components/utils/PriceFilter';
 
-import styles from "./HomeScreen.module.css";
+import styles from './HomeScreen.module.css';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -69,13 +69,13 @@ const HomeScreen = () => {
     return (
       <div
         style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%,-50%)",
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%,-50%)',
         }}>
-        <h2 style={{ color: "darkgray", marginLeft: -10, textAlign: "center" }}>
-          <span style={{ color: "red" }}>{error}</span>
+        <h2 style={{ color: 'darkgray', marginLeft: -10, textAlign: 'center' }}>
+          <span style={{ color: 'red' }}>{error}</span>
           <br />
           We already working on it...
         </h2>
@@ -116,20 +116,21 @@ const HomeScreen = () => {
               onPriceRangeChange={onPriceRangeChange}
             />
             <div className='category-filter'>
-              <h4 style={{ textAlign: "center", color: "#221A66" }}>
+              <h4 style={{ textAlign: 'center', color: '#221A66' }}>
                 Categories
               </h4>
               <div>
                 {availableCategories.map((category, idx) => (
-                  <div key={idx} style={{ marginRight: "10px" }}>
+                  <div key={idx} style={{ marginRight: '10px' }}>
                     <input
                       className='price_range_filter'
                       type='radio'
                       style={{
-                        visibility: "hidden",
+                        visibility: 'hidden',
                       }}
                       id={category}
                       onClick={handleShowCategory}
+                      onChange={handleShowCategory}
                       name={category}
                       checked={selectedCategories.includes(category)}
                       value={category}
@@ -138,15 +139,15 @@ const HomeScreen = () => {
                       className={styles.categoryFilter}
                       style={{
                         color: selectedCategories.includes(category)
-                          ? "lightgreen"
-                          : "pink",
+                          ? 'lightgreen'
+                          : 'pink',
                         backgroundColor: selectedCategories.includes(category)
-                          ? "#221A66"
-                          : "",
+                          ? '#221A66'
+                          : '',
                         padding:
-                          selectedCategories.includes(category) && "4px 4px",
+                          selectedCategories.includes(category) && '4px 4px',
                         borderRadius:
-                          selectedCategories.includes(category) && "4px",
+                          selectedCategories.includes(category) && '4px',
                       }}
                       htmlFor={category}>
                       {category}
@@ -161,8 +162,8 @@ const HomeScreen = () => {
                 onClick={changePriceOrderFilter}
                 className={styles.priceDirection}>
                 {orderFilter.toString() === maxToMinFilter().toString()
-                  ? "Price ⬇"
-                  : "Price ⬆"}
+                  ? 'Price ⬇'
+                  : 'Price ⬆'}
               </div>
             </div>
           </div>
