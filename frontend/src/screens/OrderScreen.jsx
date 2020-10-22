@@ -1,18 +1,25 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { PayPalButton } from "react-paypal-button-v2";
-import { Card, Col, Image, ListGroup, Row } from "react-bootstrap";
-import { format } from "date-fns";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { PayPalButton } from 'react-paypal-button-v2';
+import { Button, Card, Col, Image, ListGroup, Row } from 'react-bootstrap';
+import { format } from 'date-fns';
 
-import { useDispatch, useSelector } from "react-redux";
-import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
-import { getOrderDetails, payOrder } from "../actions/orderActions";
-import SpinnerLoader from "../components/UIState/SpinnerLoader";
-import AlertMessage from "../components/UIState/AlertMessage";
-import { ORDER_PAY_RESET } from "../constants/orderConstants";
+import { useDispatch, useSelector } from 'react-redux';
+import { toast, ToastContainer } from 'react-toastify';
+import { Link } from 'react-router-dom';
+import {
+  deliverOrder,
+  getOrderDetails,
+  payOrder,
+} from '../actions/orderActions';
+import SpinnerLoader from '../components/UIState/SpinnerLoader';
+import AlertMessage from '../components/UIState/AlertMessage';
+import {
+  ORDER_DELIVERED_RESET,
+  ORDER_PAY_RESET,
+} from '../constants/orderConstants';
 
-const OrderScreen = ({ match }) => {
+const OrderScreen = ({ history, match }) => {
   const dispatch = useDispatch();
   const { loading: loadingPay, success: successPay } = useSelector(
     state => state.orderPay,
@@ -20,12 +27,18 @@ const OrderScreen = ({ match }) => {
   const [sdkReady, setSdkReady] = useState(false);
   const orderId = match.params.id;
   const { order, loading, error } = useSelector(state => state.orderDetails);
+  const { success: deliverySuccess, loading: deliveryLoading } = useSelector(
+    state => state.orderDelivered,
+  );
+
+  const { userInfo } = useSelector(state => state.userLogin);
 
   useEffect(() => {
+    if (!userInfo) history.push('/login');
     const addPayPalScript = async () => {
-      const { data: clientId } = await axios.get("/api/config/paypal");
-      const script = document.createElement("script");
-      script.type = "text/javascript";
+      const { data: clientId } = await axios.get('/api/config/paypal');
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
       script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
       script.async = true;
       script.onload = () => {
@@ -33,8 +46,9 @@ const OrderScreen = ({ match }) => {
       };
       document.body.appendChild(script);
     };
-    if (!order || successPay) {
+    if (!order || successPay || deliverySuccess) {
       dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: ORDER_DELIVERED_RESET });
       dispatch(getOrderDetails(orderId));
     } else if (!order.isPaid) {
       if (!window.paypal) {
@@ -43,7 +57,8 @@ const OrderScreen = ({ match }) => {
         setSdkReady(true);
       }
     }
-  }, [dispatch, orderId, order, successPay]);
+    // es-lint-disable-next-line
+  }, [dispatch, orderId, order, successPay, deliverySuccess]);
 
   useEffect(() => {
     if (error) {
@@ -52,8 +67,11 @@ const OrderScreen = ({ match }) => {
   }, [error]);
 
   const successPaypalHandler = paymentResult => {
-    console.log(paymentResult);
     dispatch(payOrder(orderId, paymentResult));
+  };
+
+  const productDeliveryHandler = () => {
+    dispatch(deliverOrder(order._id));
   };
   return (
     <>
@@ -61,7 +79,7 @@ const OrderScreen = ({ match }) => {
         <SpinnerLoader />
       ) : (
         <>
-          <h3 className='top-heading' style={{ textAlign: "center" }}>
+          <h3 className='top-heading' style={{ textAlign: 'center' }}>
             ORDER № {match.params.id}
           </h3>
           <Row>
@@ -71,18 +89,18 @@ const OrderScreen = ({ match }) => {
                   <h4>Order will be shipped to:</h4>
                   <p>
                     <strong>Address:</strong>
-                    {order.shippingAddress.address},{" "}
-                    {order.shippingAddress.city}{" "}
-                    {order.shippingAddress.postalCode},{" "}
+                    {order.shippingAddress.address},{' '}
+                    {order.shippingAddress.city}{' '}
+                    {order.shippingAddress.postalCode},{' '}
                     {order.shippingAddress.country}
                   </p>
                   {order.deliveredAt ? (
                     <AlertMessage variant='success'>
-                      Delivery Status: {order.deliveredAt}
+                      Send To Delivery: {order.deliveredAt.substring(0, 10)}
                     </AlertMessage>
                   ) : (
                     <AlertMessage variant='secondary'>
-                      Delivery Status: Not delivered
+                      Delivery Status: Not Delivered Yet
                     </AlertMessage>
                   )}
                 </ListGroup.Item>
@@ -94,8 +112,8 @@ const OrderScreen = ({ match }) => {
                   </h5>
                   {order.isPaid ? (
                     <AlertMessage variant='success'>
-                      Payment Status: Paid at{" "}
-                      {format(new Date(order.paidAt), "yyyy-MM-dd")}
+                      Payment Status: Paid at{' '}
+                      {format(new Date(order.paidAt), 'yyyy-MM-dd')}
                     </AlertMessage>
                   ) : (
                     <AlertMessage variant='secondary'>
@@ -107,11 +125,11 @@ const OrderScreen = ({ match }) => {
               <ListGroup>
                 <ListGroup.Item>
                   <h6 className='top-heading'>
-                    Created: {format(new Date(order.createdAt), "yyyy-MM-dd")}
+                    Created: {format(new Date(order.createdAt), 'yyyy-MM-dd')}
                   </h6>
                   <strong>Name:</strong> {order.user.name}
                   <br />
-                  <strong>Registration Email:</strong>{" "}
+                  <strong>Registration Email:</strong>{' '}
                   <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
                 </ListGroup.Item>
               </ListGroup>
@@ -143,7 +161,7 @@ const OrderScreen = ({ match }) => {
               <Card>
                 <ListGroup variant='flush'>
                   <ListGroup.Item>
-                    <h5 style={{ textAlign: "center" }} className='mb-3'>
+                    <h5 style={{ textAlign: 'center' }} className='mb-3'>
                       Order Detailed
                     </h5>
                     <Row>
@@ -192,6 +210,20 @@ const OrderScreen = ({ match }) => {
                   )}
                 </ListGroup>
               </Card>
+              {deliveryLoading && <SpinnerLoader size='30' />}
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.isPaid &&
+                !order.isDelivered && (
+                  <ListGroup.Item>
+                    <Button
+                      type='button'
+                      className='btn btn-block'
+                      onClick={productDeliveryHandler}>
+                      Send to Delivery Dep
+                    </Button>
+                  </ListGroup.Item>
+                )}
             </Col>
           </Row>
         </>
