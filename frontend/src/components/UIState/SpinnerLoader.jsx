@@ -1,6 +1,6 @@
-import React from "react";
-import { css } from "@emotion/core";
-import RiseLoader from "react-spinners/RiseLoader";
+import React from 'react';
+import { css } from '@emotion/core';
+import RiseLoader from 'react-spinners/RiseLoader';
 
 // Can be a string as well. Need to ensure each key-value pair ends with ;
 const override = css`
@@ -13,10 +13,15 @@ const override = css`
   border-color: red;
 `;
 
-function Loader() {
+function Loader({ size }) {
   return (
     <div className='sweet-loading'>
-      <RiseLoader css={override} size={60} color={"#54E7A0"} loading={true} />
+      <RiseLoader
+        css={override}
+        size={size || 50}
+        color={'#54E7A0'}
+        loading={true}
+      />
     </div>
   );
 }
