@@ -13,7 +13,15 @@ import {
   ORDER_MY_ORDERS_REQUEST,
   ORDER_MY_ORDERS_SUCCESS,
   ORDER_MY_ORDERS_RESET,
-} from "../constants/orderConstants";
+  ORDER_ALL_REQUEST,
+  ORDER_ALL_FAILURE,
+  ORDER_ALL_SUCCESS,
+  ORDER_ALL_RESET,
+  ORDER_DELIVERED_REQUEST,
+  ORDER_DELIVERED_SUCCESS,
+  ORDER_DELIVERED_RESET,
+  ORDER_DELIVERED_FAILURE,
+} from '../constants/orderConstants';
 
 export const orderCreateReducer = (state = {}, { type, payload }) => {
   switch (type) {
@@ -59,6 +67,21 @@ export const orderPayReducer = (state = {}, { type, payload }) => {
   }
 };
 
+export const orderDeliverReducer = (state = {}, { type, payload }) => {
+  switch (type) {
+    case ORDER_DELIVERED_REQUEST:
+      return { ...state, loading: true };
+    case ORDER_DELIVERED_SUCCESS:
+      return { ...state, loading: false, success: true };
+    case ORDER_DELIVERED_FAILURE:
+      return { ...state, error: payload };
+    case ORDER_DELIVERED_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
 export const orderMyOrdersReducer = (
   state = { orders: [] },
   { type, payload },
@@ -86,6 +109,24 @@ export const orderMyOrdersReducer = (
         ...state,
         orders: [],
       };
+    default:
+      return state;
+  }
+};
+
+export const ordersListReducer = (
+  state = { orders: [] },
+  { type, payload },
+) => {
+  switch (type) {
+    case ORDER_ALL_REQUEST:
+      return { ...state, loading: true };
+    case ORDER_ALL_SUCCESS:
+      return { ...state, orders: payload, loading: false, success: true };
+    case ORDER_ALL_FAILURE:
+      return { ...state, error: payload, loading: false };
+    case ORDER_ALL_RESET:
+      return { ...state, orders: [] };
     default:
       return state;
   }
