@@ -1,7 +1,7 @@
 // 3-rd parties
 import React, { useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { Col, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 
 import Product from '../components/Product';
 import SpinnerLoader from '../components/UIState/SpinnerLoader';
@@ -13,10 +13,16 @@ import { listProducts } from '../actions/productActions';
 import PriceFilter from '../components/utils/PriceFilter';
 
 import styles from './HomeScreen.module.css';
+import Paginator from '../components/Paginator';
 
-const HomeScreen = () => {
+const HomeScreen = ({ match }) => {
+  const { searchParam, pageNumber = 1 } = match.params;
   const dispatch = useDispatch();
-  const { products, loading, error } = useSelector(state => state.productList);
+  const { products, pages, page, loading, error } = useSelector(
+    state => state.productList,
+  );
+  console.log(pages, page);
+  const [showFilters, setShowFilters] = useState(false);
 
   const maxProductPrice =
     products && products.sort((a, b) => b.price - a.price)[0]?.price;
@@ -42,8 +48,8 @@ const HomeScreen = () => {
   }, [maxProductPrice]);
 
   useEffect(() => {
-    dispatch(listProducts());
-  }, [dispatch]);
+    dispatch(listProducts(searchParam, pageNumber));
+  }, [dispatch, searchParam, pageNumber]);
 
   if (loading) {
     return <SpinnerLoader />;
@@ -108,80 +114,106 @@ const HomeScreen = () => {
       {products.length > 0 && !loading && (
         <>
           <h1 className='text-center homePageHeader'>Hits</h1>
-          <div className='filters'>
-            <PriceFilter
-              filteredPrice={filteredPrice}
-              minProductPrice={minProductPrice}
-              maxProductPrice={maxProductPrice}
-              onPriceRangeChange={onPriceRangeChange}
-            />
-            <div className='category-filter'>
-              <h4 style={{ textAlign: 'center', color: '#221A66' }}>
-                Categories
-              </h4>
-              <div>
-                {availableCategories.map((category, idx) => (
-                  <div key={idx} style={{ marginRight: '10px' }}>
-                    <input
-                      className='price_range_filter'
-                      type='radio'
-                      style={{
-                        visibility: 'hidden',
-                      }}
-                      id={category}
-                      onClick={handleShowCategory}
-                      onChange={handleShowCategory}
-                      name={category}
-                      checked={selectedCategories.includes(category)}
-                      value={category}
-                    />
-                    <label
-                      className={styles.categoryFilter}
-                      style={{
-                        color: selectedCategories.includes(category)
-                          ? 'lightgreen'
-                          : 'pink',
-                        backgroundColor: selectedCategories.includes(category)
-                          ? '#221A66'
-                          : '',
-                        padding:
-                          selectedCategories.includes(category) && '4px 4px',
-                        borderRadius:
-                          selectedCategories.includes(category) && '4px',
-                      }}
-                      htmlFor={category}>
-                      {category}
-                    </label>
-                    <br></br>
-                  </div>
+          <Button
+            variant='outline-info'
+            className='mt-3 py-2'
+            style={{
+              borderRadius: 15,
+              boxShadow: '2px 4px 12px rgba(0,0,0,0.3)',
+              backgroundColor: '#363B61',
+              color: '#99E34A',
+            }}
+            onClick={() => setShowFilters(prev => !prev)}>
+            Filters
+            {showFilters ? (
+              <i className='far fa-eye-slash ml-3'></i>
+            ) : (
+              <i className='far fa-eye ml-3 '></i>
+            )}
+          </Button>
+          {showFilters && (
+            <div className='filters'>
+              <PriceFilter
+                filteredPrice={filteredPrice}
+                minProductPrice={minProductPrice}
+                maxProductPrice={maxProductPrice}
+                onPriceRangeChange={onPriceRangeChange}
+              />
+              <div className='category-filter'>
+                <h4 style={{ textAlign: 'center', color: '#221A66' }}>
+                  Categories
+                </h4>
+                <div>
+                  {availableCategories.map((category, idx) => (
+                    <div key={idx} style={{ marginRight: '10px' }}>
+                      <input
+                        className='price_range_filter'
+                        type='radio'
+                        style={{
+                          visibility: 'hidden',
+                        }}
+                        id={category}
+                        onClick={handleShowCategory}
+                        onChange={handleShowCategory}
+                        name={category}
+                        checked={selectedCategories.includes(category)}
+                        value={category}
+                      />
+                      <label
+                        className={styles.categoryFilter}
+                        style={{
+                          color: selectedCategories.includes(category)
+                            ? 'lightgreen'
+                            : 'pink',
+                          backgroundColor: selectedCategories.includes(category)
+                            ? '#221A66'
+                            : '',
+                          padding:
+                            selectedCategories.includes(category) && '4px 4px',
+                          borderRadius:
+                            selectedCategories.includes(category) && '4px',
+                        }}
+                        htmlFor={category}>
+                        {category}
+                      </label>
+                      <br></br>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className='orderFilter'>
+                <div
+                  onClick={changePriceOrderFilter}
+                  className={styles.priceDirection}>
+                  {orderFilter.toString() === maxToMinFilter().toString()
+                    ? 'Price ⬇'
+                    : 'Price ⬆'}
+                </div>
+              </div>
+            </div>
+          )}
+          <>
+            <Row>
+              {products
+                .filter(item => item.price <= filteredPrice)
+                .filter(item =>
+                  selectedCategories.length === 0
+                    ? item
+                    : selectedCategories.includes(item.category),
+                )
+                .sort(orderFilter)
+                .map(product => (
+                  <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+                    <Product product={product} />
+                  </Col>
                 ))}
-              </div>
-            </div>
-            <div className='orderFilter'>
-              <div
-                onClick={changePriceOrderFilter}
-                className={styles.priceDirection}>
-                {orderFilter.toString() === maxToMinFilter().toString()
-                  ? 'Price ⬇'
-                  : 'Price ⬆'}
-              </div>
-            </div>
-          </div>
-          <Row>
-            {products
-              .filter(item => item.price <= filteredPrice)
-              .filter(item =>
-                selectedCategories.length === 0
-                  ? item
-                  : selectedCategories.includes(item.category),
-              )
-              .sort(orderFilter)
-              .map(product => (
-                <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                  <Product product={product} />
-                </Col>
-              ))}
-          </Row>
+            </Row>
+            <Paginator
+              pages={pages}
+              page={page}
+              searchParam={searchParam ? searchParam : ''}
+            />
+          </>
         </>
       )}
       <ToastContainer />
