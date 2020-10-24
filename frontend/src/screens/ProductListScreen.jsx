@@ -10,11 +10,17 @@ import {
   listProducts,
 } from '../actions/productActions';
 import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
+import Paginator from '../components/Paginator';
 
 const ProductListScreen = ({ history, match }) => {
+  const { pageNumber } = match.params || 1;
+
   const dispatch = useDispatch();
-  const { loading, error, products } = useSelector(state => state.productList);
+  const { loading, error, products, pages, page } = useSelector(
+    state => state.productList,
+  );
   const { userInfo } = useSelector(state => state.userLogin);
+
   const {
     loading: loadingOnDeleteProduct,
     error: errorOnDeleteProduct,
@@ -32,8 +38,8 @@ const ProductListScreen = ({ history, match }) => {
     if (!userInfo.isAdmin) {
       history.push('/login');
     }
-    dispatch(listProducts());
-  }, [dispatch, history, userInfo]);
+    dispatch(listProducts('', pageNumber));
+  }, [dispatch, history, userInfo, pageNumber]);
 
   useEffect(() => {
     if (error) {
@@ -124,6 +130,7 @@ const ProductListScreen = ({ history, match }) => {
           ))}
         </tbody>
       </Table>
+      <Paginator page={page} pages={pages} isAdmin={userInfo.isAdmin} />
       <ToastContainer />
     </>
   );
