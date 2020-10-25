@@ -14,6 +14,7 @@ import PriceFilter from '../components/utils/PriceFilter';
 
 import styles from './HomeScreen.module.css';
 import Paginator from '../components/Paginator';
+import ProductCarousel from '../components/ProductCarousel';
 
 const HomeScreen = ({ match }) => {
   const { searchParam, pageNumber = 1 } = match.params;
@@ -21,7 +22,7 @@ const HomeScreen = ({ match }) => {
   const { products, pages, page, loading, error } = useSelector(
     state => state.productList,
   );
-  console.log(pages, page);
+
   const [showFilters, setShowFilters] = useState(false);
 
   const maxProductPrice =
@@ -114,11 +115,12 @@ const HomeScreen = ({ match }) => {
       {products.length > 0 && !loading && (
         <>
           <h1 className='text-center homePageHeader'>Hits</h1>
+          {!searchParam && <ProductCarousel />}
           <Button
             variant='outline-info'
             className='mt-3 py-2'
             style={{
-              borderRadius: 15,
+              borderRadius: 4,
               boxShadow: '2px 4px 12px rgba(0,0,0,0.3)',
               backgroundColor: '#363B61',
               color: '#99E34A',
