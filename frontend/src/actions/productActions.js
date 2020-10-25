@@ -15,6 +15,9 @@ import {
   PRODUCT_LIST_FAIL,
   PRODUCT_LIST_REQUEST,
   PRODUCT_LIST_SUCCESS,
+  PRODUCT_TOP_FAIL,
+  PRODUCT_TOP_REQUEST,
+  PRODUCT_TOP_SUCCESS,
   PRODUCT_UPDATE_FAIL,
   PRODUCT_UPDATE_REQUEST,
   PRODUCT_UPDATE_SUCCESS,
@@ -152,6 +155,27 @@ export const addProductReview = (id, review) => async (dispatch, getState) => {
     dispatch({
       type: PRODUCT_CREATE_REVIEW_FAIL,
       payload: error.message,
+    });
+  }
+};
+
+export const getTopRatedProducts = () => async dispatch => {
+  try {
+    dispatch({ type: PRODUCT_TOP_REQUEST });
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const { data } = await axios.get(`/api/products/top`, config);
+
+    dispatch({ type: PRODUCT_TOP_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_TOP_FAIL,
+      payload: 'Server failure. Try again',
     });
   }
 };
