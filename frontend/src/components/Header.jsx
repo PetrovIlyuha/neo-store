@@ -12,12 +12,18 @@ const Header = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { userInfo } = useSelector(state => state.userLogin);
+  const { cartItems } = useSelector(state => state.cart);
+
+  const numProductsInCart = cartItems.reduce(
+    (acc, item) => acc + item.quantity,
+    0,
+  );
 
   const logoutHandler = () => {
     dispatch(logout());
     history.push('/');
   };
-
+  // console.log(numProductsInCart);
   return (
     <header>
       <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
@@ -32,7 +38,11 @@ const Header = () => {
             <Route render={({ history }) => <SearchBox history={history} />} />
             <Nav className='ml-auto' variant='dark'>
               <LinkContainer to='/cart'>
-                <Nav.Link>
+                <Nav.Link style={{ position: 'absolute' }}>
+                  <span
+                    style={{ position: 'relative', top: '-20%', left: '-5%' }}>
+                    {numProductsInCart > 0 ? numProductsInCart : ''}
+                  </span>
                   <i className='fas fa-shopping-cart'></i> Cart
                 </Nav.Link>
               </LinkContainer>
