@@ -23,6 +23,7 @@ import {
   addProductReview,
 } from '../actions/productActions';
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants';
+import MetaInfo from '../components/MetaInfo';
 
 const ProductScreen = ({ history, match }) => {
   const [quantity, setQuantity] = useState(1);
@@ -97,6 +98,7 @@ const ProductScreen = ({ history, match }) => {
   }
   return (
     <div>
+      <MetaInfo title={product.name} />
       <Link
         className='btn btn-block back-home-button my-3'
         style={{ width: '140px' }}
