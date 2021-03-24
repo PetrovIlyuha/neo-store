@@ -4,37 +4,36 @@ import { Button, Col, Row, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import SpinnerLoader from '../components/UIState/SpinnerLoader';
 import { toast, ToastContainer } from 'react-toastify';
+import Paginator from '../components/Paginator';
 import {
   createProduct,
   deleteProduct,
   listProducts,
-} from '../actions/productActions';
-import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
-import Paginator from '../components/Paginator';
+  productCreateReset,
+} from '../redux-slices/productReducer';
 
 const ProductListScreen = ({ history, match }) => {
   const { pageNumber } = match.params || 1;
 
   const dispatch = useDispatch();
-  const { loading, error, products, pages, page } = useSelector(
-    state => state.productList,
-  );
-  const { userInfo } = useSelector(state => state.userLogin);
-
   const {
-    loading: loadingOnDeleteProduct,
-    error: errorOnDeleteProduct,
-    success: successDeleteProduct,
-  } = useSelector(state => state.productDelete);
-  const {
-    loading: loadingCreateProduct,
-    error: errorCreateProduct,
-    product: createdProduct,
-    success: successCreateProduct,
-  } = useSelector(state => state.productCreate);
+    loading,
+    error,
+    products,
+    pages,
+    page,
+    product,
+    productDeleteSuccess,
+    productDeleteLoading,
+    productDeleteError,
+    productCreateLoading,
+    productCreateSuccess,
+    productCreateError,
+  } = useSelector(state => state.products);
+  const { userInfo } = useSelector(state => state.users);
 
   useEffect(() => {
-    dispatch({ type: PRODUCT_CREATE_RESET });
+    dispatch(productCreateReset());
     if (!userInfo.isAdmin) {
       history.push('/login');
     }
@@ -45,31 +44,31 @@ const ProductListScreen = ({ history, match }) => {
     if (error) {
       toast.error(error);
     }
-    if (errorOnDeleteProduct) {
-      toast.error(errorOnDeleteProduct);
+    if (productDeleteError) {
+      toast.error(productDeleteError);
     }
-    if (errorCreateProduct) {
-      toast.error(errorCreateProduct);
+    if (productCreateError) {
+      toast.error(productCreateError);
     }
-    if (successDeleteProduct) {
+    if (productDeleteSuccess) {
       toast.success('Product was successfully deleted!');
     }
-    if (successCreateProduct) {
+    if (productCreateSuccess) {
       toast.success('Sample product was successfully created');
       setTimeout(() => {
-        history.push(`/admin/product/${createdProduct._id}/edit`);
+        history.push(`/admin/product/${product._id}/edit`);
       }, 1800);
     }
   }, [
     error,
-    errorOnDeleteProduct,
-    successDeleteProduct,
-    successCreateProduct,
-    errorCreateProduct,
+    productDeleteError,
+    productDeleteSuccess,
+    productCreateSuccess,
+    productCreateError,
     history,
   ]);
 
-  if (loading || loadingOnDeleteProduct || loadingCreateProduct) {
+  if (loading || productDeleteLoading || productCreateLoading) {
     return <SpinnerLoader />;
   }
 

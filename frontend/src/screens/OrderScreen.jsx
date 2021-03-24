@@ -7,31 +7,25 @@ import { format } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
 import { Link } from 'react-router-dom';
-import {
-  deliverOrder,
-  getOrderDetails,
-  payOrder,
-} from '../actions/orderActions';
 import SpinnerLoader from '../components/UIState/SpinnerLoader';
 import AlertMessage from '../components/UIState/AlertMessage';
-import {
-  ORDER_DELIVERED_RESET,
-  ORDER_PAY_RESET,
-} from '../constants/orderConstants';
+import { getOrderDetails, payOrder, deliverOrder } from '../redux-slices/ordersReducer';
 
 const OrderScreen = ({ history, match }) => {
   const dispatch = useDispatch();
-  const { loading: loadingPay, success: successPay } = useSelector(
-    state => state.orderPay,
-  );
+  const {
+    loadingPayment,
+    successPayment,
+    successDelivery,
+    loadingDelivery,
+    order,
+    detailsLoading,
+    detailsSuccess,
+    error,
+  } = useSelector(state => state.orders);
+  const { userInfo } = useSelector(state => state.users);
   const [sdkReady, setSdkReady] = useState(false);
   const orderId = match.params.id;
-  const { order, loading, error } = useSelector(state => state.orderDetails);
-  const { success: deliverySuccess, loading: deliveryLoading } = useSelector(
-    state => state.orderDelivered,
-  );
-
-  const { userInfo } = useSelector(state => state.userLogin);
 
   useEffect(() => {
     if (!userInfo) history.push('/login');
@@ -46,9 +40,7 @@ const OrderScreen = ({ history, match }) => {
       };
       document.body.appendChild(script);
     };
-    if (!order || successPay || deliverySuccess) {
-      dispatch({ type: ORDER_PAY_RESET });
-      dispatch({ type: ORDER_DELIVERED_RESET });
+    if (!order || successPayment || successDelivery) {
       dispatch(getOrderDetails(orderId));
     } else if (!order.isPaid) {
       if (!window.paypal) {
@@ -58,7 +50,7 @@ const OrderScreen = ({ history, match }) => {
       }
     }
     // es-lint-disable-next-line
-  }, [dispatch, orderId, order, successPay, deliverySuccess]);
+  }, [dispatch, orderId, order, successPayment, successDelivery]);
 
   useEffect(() => {
     if (error) {
@@ -75,7 +67,7 @@ const OrderScreen = ({ history, match }) => {
   };
   return (
     <>
-      {loading ? (
+      {detailsLoading ? (
         <SpinnerLoader />
       ) : (
         <>
@@ -197,7 +189,7 @@ const OrderScreen = ({ history, match }) => {
                   </ListGroup.Item>
                   {!order.isPaid && (
                     <ListGroup.Item>
-                      {loadingPay && <SpinnerLoader />}
+                      {loadingPayment && <SpinnerLoader />}
                       {!sdkReady ? (
                         <SpinnerLoader />
                       ) : (
@@ -210,7 +202,7 @@ const OrderScreen = ({ history, match }) => {
                   )}
                 </ListGroup>
               </Card>
-              {deliveryLoading && <SpinnerLoader size='30' />}
+              {loadingDelivery && <SpinnerLoader size='30' />}
               {userInfo &&
                 userInfo.isAdmin &&
                 order.isPaid &&

@@ -1,37 +1,40 @@
-import React, { useState, useEffect } from "react";
-import { Form, Button, Row, Col, Table } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { getUserDetails, updateUserProfile } from "../actions/userActions";
-import { showMyOrders } from "../actions/orderActions";
-import SpinnerLoader from "../components/UIState/SpinnerLoader";
-import { toast, ToastContainer } from "react-toastify";
-import { format } from "date-fns";
+import React, { useState, useEffect } from 'react';
+import { Form, Button, Row, Col, Table } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import SpinnerLoader from '../components/UIState/SpinnerLoader';
+import { toast, ToastContainer } from 'react-toastify';
+import { format } from 'date-fns';
+import { getUserDetails, updateUserProfile } from '../redux-slices/userReducer';
+import { showMyOrders } from '../redux-slices/ordersReducer';
 const ProfileScreen = ({ history, location }) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState(null);
 
   const dispatch = useDispatch();
-  const { userInfo } = useSelector(state => state.userLogin);
+  const {
+    userInfo,
+    loading,
+    error,
+    user,
+    updateUserProfileSuccess,
+    updateUserProfileError,
+  } = useSelector(state => state.users);
 
-  const { loading, error, user } = useSelector(state => state.userDetails);
-  const { loading: loadingMyOrders, orders } = useSelector(
-    state => state.orderMyOrders,
-  );
-  const { success } = useSelector(state => state.userUpdateProfile);
+  const { myOrdersLoading, myOrdersError, orders } = useSelector(state => state.orders);
   // const redirect = location.search ? location.search.split("=")[1] : "/";
 
   useEffect(() => {
     if (!userInfo) {
-      history.push("/login");
+      history.push('/login');
     }
   }, [userInfo, history]);
 
   useEffect(() => {
-    dispatch(getUserDetails("profile"));
+    dispatch(getUserDetails('profile'));
     dispatch(showMyOrders());
   }, [dispatch]);
 
@@ -47,21 +50,21 @@ const ProfileScreen = ({ history, location }) => {
   }, [message]);
 
   useEffect(() => {
-    if (error) {
+    if (updateUserProfileError) {
       toast.error(error);
     }
-  }, [error]);
+  }, [updateUserProfileError]);
 
   useEffect(() => {
-    if (success) {
-      toast.success("Profile was updated!");
+    if (updateUserProfileSuccess) {
+      toast.success('Profile was updated!');
     }
-  }, [success]);
+  }, [updateUserProfileSuccess]);
 
   const loginFormSubmitHandler = e => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setMessage("Passwords should be the same!");
+      setMessage('Passwords should be the same!');
     }
     dispatch(updateUserProfile({ id: user._id, name, email, password }));
   };
@@ -112,7 +115,7 @@ const ProfileScreen = ({ history, location }) => {
       </Col>
       <Col md={7}>
         <h2 className='top-heading text-center'>Orders</h2>
-        {loadingMyOrders && <SpinnerLoader />}
+        {myOrdersLoading && <SpinnerLoader />}
 
         <Table striped bordered hover responsive className='table-sm bg-light'>
           <thead>
@@ -131,12 +134,12 @@ const ProfileScreen = ({ history, location }) => {
                 <tr key={order._id}>
                   <td>{order._id}</td>
                   {/* <td>{typeof order.createdAt}</td> */}
-                  <td>{format(new Date(order.createdAt), "yyyy-MM-dd")}</td>
+                  <td>{format(new Date(order.createdAt), 'yyyy-MM-dd')}</td>
                   <td>{order.totalPrice}</td>
                   <td>
-                    {order.isPaid ? order.paidAt.substring(0, 10) : "Not Paid"}
+                    {order.isPaid ? order.paidAt.substring(0, 10) : 'Not Paid'}
                   </td>
-                  <td>{order.isDelivered ? "Delivered" : "Delivering"}</td>
+                  <td>{order.isDelivered ? 'Delivered' : 'Delivering'}</td>
                   <td>
                     <LinkContainer to={`/order/${order._id}`}>
                       <Button variant='dark'>Details</Button>

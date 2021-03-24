@@ -5,13 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import SpinnerLoader from '../components/UIState/SpinnerLoader';
 import { toast, ToastContainer } from 'react-toastify';
 
-import { getAllOrders } from '../actions/orderActions';
-import { ORDER_ALL_RESET } from '../constants/orderConstants';
+import { allOrdersReset, getAllOrders } from '../redux-slices/ordersReducer';
 
 const OrderListScreen = ({ history, match }) => {
   const dispatch = useDispatch();
-  const { loading, error, orders } = useSelector(state => state.allOrders);
-  const { userInfo } = useSelector(state => state.userLogin);
+  const { loading, error, orders } = useSelector(state => state.orders);
+  const { userInfo } = useSelector(state => state.users);
 
   useEffect(() => {
     if (!userInfo.isAdmin) {
@@ -21,7 +20,7 @@ const OrderListScreen = ({ history, match }) => {
     dispatch(getAllOrders());
 
     return () => {
-      dispatch({ type: ORDER_ALL_RESET });
+      dispatch(allOrdersReset());
     };
   }, [dispatch, history, userInfo]);
 

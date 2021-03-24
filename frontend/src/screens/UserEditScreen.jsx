@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserDetails, updateUser } from '../actions/userActions';
 import FormContainer from '../components/FormContainer';
 import SpinnerLoader from '../components/UIState/SpinnerLoader';
 import { toast, ToastContainer } from 'react-toastify';
-import { USER_UPDATE_RESET } from '../constants/userConstants';
+import { getUserDetails, updateUser } from '../redux-slices/userReducer';
 
 const UserEditScreen = ({ history, match }) => {
   const userId = match.params.id;
@@ -19,16 +18,16 @@ const UserEditScreen = ({ history, match }) => {
   const { name, email, isAdmin } = userFields;
 
   const dispatch = useDispatch();
-  const { loading, user } = useSelector(state => state.userDetails);
   const {
-    loading: loadingUpdatedUser,
-    success: userUpdateSuccess,
-    error: errorUpdateUser,
-  } = useSelector(state => state.userUpdate);
+    loading,
+    user,
+    updateUserSuccess,
+    updateUserError,
+    updateUserLoading,
+  } = useSelector(state => state.users);
 
   useEffect(() => {
-    if (userUpdateSuccess) {
-      dispatch({ type: USER_UPDATE_RESET });
+    if (updateUserSuccess) {
       history.push('/admin/userlist');
     } else {
       if (!user || user._id !== userId) {
@@ -38,7 +37,7 @@ const UserEditScreen = ({ history, match }) => {
         setUserFields({ name, email, isAdmin });
       }
     }
-  }, [history, user, dispatch, userId, userUpdateSuccess]);
+  }, [history, user, dispatch, userId, updateUserSuccess]);
 
   const onUserDataChangeHandler = e => {
     if (e.target.name === 'isAdmin') {
@@ -50,12 +49,11 @@ const UserEditScreen = ({ history, match }) => {
 
   const submitHandler = e => {
     e.preventDefault();
-    console.log(userFields);
     dispatch(updateUser({ _id: userId, name, email, isAdmin }));
   };
 
-  if (loading || loadingUpdatedUser) return <SpinnerLoader />;
-  if (errorUpdateUser) toast.error('User update failed!');
+  if (loading || updateUserLoading) return <SpinnerLoader />;
+  if (updateUserError) toast.error('User update failed!');
   return (
     <>
       <Link to='/admin/userlist' className='btn btn-light my-3'>

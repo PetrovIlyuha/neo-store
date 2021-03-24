@@ -2,16 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../actions/userActions";
 import FormContainer from "../components/FormContainer";
 import SpinnerLoader from "../components/UIState/SpinnerLoader";
 import { toast, ToastContainer } from "react-toastify";
+import { login } from "../redux-slices/userReducer";
 
 const LoginScreen = ({ history, location }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const { loading, error, userInfo } = useSelector(state => state.userLogin);
+  const { loading, error, userInfo } = useSelector(state => state.users);
   const redirect = location.search ? location.search.split("=")[1] : "/";
 
   useEffect(() => {

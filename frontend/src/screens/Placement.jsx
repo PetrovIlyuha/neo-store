@@ -1,11 +1,11 @@
-import React from "react";
-import { useEffect } from "react";
-import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { toast, ToastContainer } from "react-toastify";
-import { Link } from "react-router-dom";
-import { createOrder } from "../actions/orderActions";
-import CheckoutStaged from "../components/CheckoutStaged";
+import React from 'react';
+import { useEffect } from 'react';
+import { Button, Card, Col, Image, ListGroup, Row } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast, ToastContainer } from 'react-toastify';
+import { Link } from 'react-router-dom';
+import CheckoutStaged from '../components/CheckoutStaged';
+import { createOrder } from '../redux-slices/ordersReducer';
 
 const Placement = ({ history }) => {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ const Placement = ({ history }) => {
     paymentMethod,
   } = useSelector(state => state.cart);
   const { shippingAddress } = useSelector(state => state.cart);
-  const { order, success, error } = useSelector(state => state.orderCreate);
+  const { order, success, error } = useSelector(state => state.orders);
 
   let totalOrderPayment = cartItems.reduce(
     (total, item) => item.price * item.quantity + total,
@@ -50,16 +50,6 @@ const Placement = ({ history }) => {
   }, [history, success, error]);
 
   const placeOrderHandler = () => {
-    console.log(
-      cartItems,
-      shippingAddress,
-      paymentMethod,
-      totalOrderPayment,
-      totalShippingPrice(totalOrderPayment),
-      +orderTaxation.toFixed(2),
-      +totalOrderCostAfterShippingAndTaxes,
-    );
-
     dispatch(
       createOrder({
         orderItems: cartItems,
@@ -77,7 +67,7 @@ const Placement = ({ history }) => {
       <CheckoutStaged step1 step2 step3 step4 />
       <Row>
         <Col md={8} className='mt-4'>
-          <ListGroup variant='flush' onClick={() => history.push("/shipping")}>
+          <ListGroup variant='flush' onClick={() => history.push('/shipping')}>
             <ListGroup.Item>
               <h4>Order will be shipped to:</h4>
               <p>
@@ -93,7 +83,7 @@ const Placement = ({ history }) => {
               </h5>
             </ListGroup.Item>
           </ListGroup>
-          <h5 style={{ textAlign: "center", color: "gray" }} className='mt-3'>
+          <h5 style={{ textAlign: 'center', color: 'gray' }} className='mt-3'>
             Your Cart
           </h5>
           <ListGroup variant='flush'>
@@ -122,7 +112,7 @@ const Placement = ({ history }) => {
           <Card>
             <ListGroup variant='flush'>
               <ListGroup.Item>
-                <h5 style={{ textAlign: "center" }} className='mb-3'>
+                <h5 style={{ textAlign: 'center' }} className='mb-3'>
                   Order Detailed
                 </h5>
                 <Row>

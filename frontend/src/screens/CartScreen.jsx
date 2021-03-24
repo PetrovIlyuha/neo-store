@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import {
   Button,
   Card,
@@ -7,20 +7,23 @@ import {
   Image,
   ListGroup,
   Row,
-} from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { addToCart, removeFromCart } from "../actions/cartActions";
+} from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import EmptyCart from "../assets/images/EmptyCart";
+import EmptyCart from '../assets/images/EmptyCart';
+import MetaInfo from '../components/MetaInfo';
+import {
+  addToCart,
+  removeFromCart,
+} from '../redux-slices/cartReducer';
 
 const CartScreen = ({ match, location, history }) => {
   const productId = match.params.id;
   const dispatch = useDispatch();
   const { cartItems } = useSelector(state => state.cart);
 
-  const quantity = location.search ? +location.search.split("=")[1] : 1;
-
+  const quantity = location.search ? +location.search.split('=')[1] : 1;
   useEffect(() => {
     if (productId) {
       dispatch(addToCart(productId, quantity));
@@ -28,7 +31,6 @@ const CartScreen = ({ match, location, history }) => {
   }, [dispatch, productId, match, quantity]);
 
   const removeFromCartHandler = id => {
-    console.log(`item removed: ${id}`);
     dispatch(removeFromCart(id));
   };
 
@@ -37,13 +39,17 @@ const CartScreen = ({ match, location, history }) => {
   };
   return (
     <div className='shopping-cart'>
+      <MetaInfo
+        title='Your Cart'
+        keywords='Shopping cart, neo-store shopping cart, customer page'
+      />
       {cartItems.length === 0 ? (
         <div className='screen-center'>
           <h3>Your cart is empty</h3>
           <EmptyCart />
           <Link
             className='btn btn-block back-home-button my-3'
-            style={{ width: "140px" }}
+            style={{ width: '140px' }}
             to='/'>
             Back to <i className='fas fa-home'></i>
           </Link>
@@ -51,7 +57,7 @@ const CartScreen = ({ match, location, history }) => {
       ) : (
         <Row>
           <Col md={8}>
-            <h1 style={{ textAlign: "center" }}>Your Cart</h1>
+            <h1 style={{ textAlign: 'center' }}>Your Cart</h1>
             <ListGroup variant='flush'>
               {cartItems.map(item => (
                 <ListGroup.Item key={item.product} className='my-2'>
@@ -96,26 +102,26 @@ const CartScreen = ({ match, location, history }) => {
           <Col md={4}>
             <h4 className='mt-4 text-center'>Order Details</h4>
             <Card className='mt-4'>
-              <ListGroup variant='flush' style={{ textDecoration: "none" }}>
+              <ListGroup variant='flush' style={{ textDecoration: 'none' }}>
                 <ListGroup.Item>
                   <h5>
                     Products in cart: (
                     {cartItems.reduce((acc, item) => acc + item.quantity, 0)})
                   </h5>
                   <h6>
-                    Total Check:{" "}
+                    Total Check:{' '}
                     <span
                       style={{
-                        color: "blue",
-                        fontSize: "1rem",
+                        color: 'blue',
+                        fontSize: '1rem',
 
-                        fontWeight: "bold",
+                        fontWeight: 'bold',
                       }}>
                       $
                       {cartItems
                         .reduce(
                           (acc, item) => acc + item.quantity * item.price,
-                          0
+                          0,
                         )
                         .toFixed(2)}
                     </span>

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { Button, Col, Row } from 'react-bootstrap';
+import { motion } from 'framer-motion';
 
 import Product from '../components/Product';
 import SpinnerLoader from '../components/UIState/SpinnerLoader';
@@ -9,26 +10,27 @@ import ServerError from '../assets/images/ServerError';
 
 // redux ops
 import { useDispatch, useSelector } from 'react-redux';
-import { listProducts } from '../actions/productActions';
 import PriceFilter from '../components/utils/PriceFilter';
 
 import styles from './HomeScreen.module.css';
 import Paginator from '../components/Paginator';
 import ProductCarousel from '../components/ProductCarousel';
+import MetaInfo from '../components/MetaInfo';
+import { listProducts } from '../redux-slices/productReducer';
+import {  appearFromRight } from '../components/utils/framer-animations';
 
 const HomeScreen = ({ match }) => {
   const { searchParam, pageNumber = 1 } = match.params;
   const dispatch = useDispatch();
   const { products, pages, page, loading, error } = useSelector(
-    state => state.productList,
+    state => state.products,
   );
-
   const [showFilters, setShowFilters] = useState(false);
 
-  const maxProductPrice =
-    products && products.sort((a, b) => b.price - a.price)[0]?.price;
+  let maxProductPrice =
+    products && products.slice().sort((a, b) => b.price - a.price)[0]?.price;
   const minProductPrice =
-    products && products.sort((a, b) => a.price - b.price)[0]?.price;
+    products && products.slice().sort((a, b) => a.price - b.price)[0]?.price;
 
   const [filteredPrice, setFilteredPrice] = useState(maxProductPrice || 10000);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -112,19 +114,14 @@ const HomeScreen = ({ match }) => {
 
   return (
     <>
+      <MetaInfo />
       {products.length > 0 && !loading && (
         <>
           <h1 className='text-center homePageHeader'>Hits</h1>
           {!searchParam && <ProductCarousel />}
           <Button
-            variant='outline-info'
-            className='mt-3 py-2'
-            style={{
-              borderRadius: 4,
-              boxShadow: '2px 4px 12px rgba(0,0,0,0.3)',
-              backgroundColor: '#363B61',
-              color: '#99E34A',
-            }}
+            variant='outline'
+            className='mt-3 py-2 homeFilterBtn'
             onClick={() => setShowFilters(prev => !prev)}>
             Filters
             {showFilters ? (
@@ -134,7 +131,11 @@ const HomeScreen = ({ match }) => {
             )}
           </Button>
           {showFilters && (
-            <div className='filters'>
+            <motion.div
+              className='filters'
+              variants={appearFromRight}
+              initial="hidden"
+              animate="show">
               <PriceFilter
                 filteredPrice={filteredPrice}
                 minProductPrice={minProductPrice}
@@ -192,7 +193,7 @@ const HomeScreen = ({ match }) => {
                     : 'Price ⬆'}
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
           <>
             <Row>
@@ -205,7 +206,7 @@ const HomeScreen = ({ match }) => {
                 )
                 .sort(orderFilter)
                 .map(product => (
-                  <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+                  <Col key={product._id} sm={12} md={6} lg={4} xl={4}>
                     <Product product={product} />
                   </Col>
                 ))}

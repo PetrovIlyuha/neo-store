@@ -1,37 +1,41 @@
-import React, { useEffect } from "react";
-import { LinkContainer } from "react-router-bootstrap";
-import { Button, Table } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import SpinnerLoader from "../components/UIState/SpinnerLoader";
-import { toast, ToastContainer } from "react-toastify";
-import { listUsers, deleteUser } from "../actions/userActions";
+import React, { useEffect } from 'react';
+import { LinkContainer } from 'react-router-bootstrap';
+import { Button, Table } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import SpinnerLoader from '../components/UIState/SpinnerLoader';
+import { toast, ToastContainer } from 'react-toastify';
+import { deleteUser, listUsers } from '../redux-slices/userReducer';
 
 const UserListScreen = ({ history }) => {
   const dispatch = useDispatch();
-  const { loading, error, users } = useSelector(state => state.userList);
-  const { userInfo } = useSelector(state => state.userLogin);
-  const { success: deleteSuccess, message } = useSelector(
-    state => state.userDelete,
-  );
+  const {
+    loading,
+    error,
+    users,
+    deleteUserSuccess,
+    message,
+    userInfo,
+  } = useSelector(state => state.users);
 
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
       dispatch(listUsers());
     } else {
-      history.push("/login");
+      history.push('/login');
     }
-  }, [dispatch, history, userInfo, deleteSuccess]);
+  }, [dispatch, history, userInfo, deleteUserSuccess]);
 
   useEffect(() => {
     if (error) {
       toast.error(error.message);
     }
-    if (deleteSuccess) {
+    if (deleteUserSuccess) {
       setTimeout(() => {
         toast.success(message);
       }, 2000);
     }
-  }, [error, deleteSuccess, message]);
+  }, [error, deleteUserSuccess, message]);
+
   if (loading) {
     return <SpinnerLoader />;
   }
@@ -41,7 +45,7 @@ const UserListScreen = ({ history }) => {
       toast.error("You can't delete your account!");
       return;
     }
-    if (window.confirm("Are you sure you want to delete this User?")) {
+    if (window.confirm('Are you sure you want to delete this User?')) {
       dispatch(deleteUser(id));
     }
   };
@@ -61,16 +65,16 @@ const UserListScreen = ({ history }) => {
         <tbody>
           {users.map(user => (
             <tr key={user._id}>
-              <td style={{ color: "lightgreen" }}>{user._id}</td>
-              <td style={{ color: "lightgreen" }}>{user.name}</td>
+              <td style={{ color: 'lightgreen' }}>{user._id}</td>
+              <td style={{ color: 'lightgreen' }}>{user.name}</td>
               <td>
                 <a href={`mailto:${user.email}`}>{user.email}</a>
               </td>
               <td className='text-center'>
                 {user.isAdmin ? (
-                  <i className='fas fa-check' style={{ color: "green" }}></i>
+                  <i className='fas fa-check' style={{ color: 'green' }}></i>
                 ) : (
-                  <i className='fas fa-times' style={{ color: "red" }}></i>
+                  <i className='fas fa-times' style={{ color: 'red' }}></i>
                 )}
               </td>
               <td className='text-center'>

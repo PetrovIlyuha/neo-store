@@ -6,21 +6,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import FormContainer from '../components/FormContainer';
 import SpinnerLoader from '../components/UIState/SpinnerLoader';
 import { toast, ToastContainer } from 'react-toastify';
-import { listProductDetails, updateProduct } from '../actions/productActions';
-import { PRODUCT_UPDATE_RESET } from '../constants/productConstants';
+import {
+  listProductDetails,
+  productUpdateReset,
+  updateProduct,
+} from '../redux-slices/productReducer';
 
 const ProductEditScreen = ({ history, match }) => {
   const productId = match.params.id;
 
   const dispatch = useDispatch();
-  const { loading, error, product } = useSelector(
-    state => state.productDetails,
-  );
   const {
-    loading: updateLoading,
-    error: updateError,
-    success: updateSuccess,
-  } = useSelector(state => state.productUpdate);
+    productDetailsLoading,
+    productDetailsError,
+    product,
+    productUpdateLoading,
+    productUpdateError,
+    productUpdateSuccess,
+  } = useSelector(state => state.products);
 
   const [productFields, setProductFields] = useState({
     name: 'Sample name',
@@ -46,9 +49,9 @@ const ProductEditScreen = ({ history, match }) => {
   } = productFields;
 
   useEffect(() => {
-    if (updateSuccess) {
+    if (productUpdateSuccess) {
       toast.success('Product was updated!');
-      dispatch({ type: PRODUCT_UPDATE_RESET });
+      dispatch(productUpdateReset());
       history.push('/admin/productlist');
     } else {
       if (!product.name || product._id !== productId) {
@@ -71,7 +74,7 @@ const ProductEditScreen = ({ history, match }) => {
   }, [
     dispatch,
     product,
-    updateSuccess,
+    productUpdateSuccess,
     productFields.name,
     history,
     productId,
@@ -104,9 +107,9 @@ const ProductEditScreen = ({ history, match }) => {
     } catch (err) {}
   };
 
-  if (loading || updateLoading) return <SpinnerLoader />;
-  if (error) toast.error('Product details request failed!');
-  if (updateError) toast.error('Product update failed! Try again');
+  if (productDetailsLoading || productUpdateLoading) return <SpinnerLoader />;
+  if (productDetailsError) toast.error('Product details request failed!');
+  if (productUpdateError) toast.error('Product update failed! Try again');
 
   return (
     <>

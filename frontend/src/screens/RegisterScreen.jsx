@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "../actions/userActions";
 import FormContainer from "../components/FormContainer";
 import SpinnerLoader from "../components/UIState/SpinnerLoader";
 import { toast, ToastContainer } from "react-toastify";
+import { register } from "../redux-slices/userReducer";
 
 const RegisterScreen = ({ history, location }) => {
   const [name, setName] = useState("");
@@ -15,7 +15,7 @@ const RegisterScreen = ({ history, location }) => {
   const [message, setMessage] = useState(null);
 
   const dispatch = useDispatch();
-  const { loading, error, userInfo } = useSelector(state => state.userRegister);
+  const { loading, error, userInfo } = useSelector(state => state.users);
 
   const redirect = location.search ? location.search.split("=")[1] : "/";
 
