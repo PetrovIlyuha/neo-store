@@ -1,16 +1,35 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge, Button, Card } from 'react-bootstrap';
 import Rating from './Rating';
-import { addToCart } from '../actions/cartActions';
+import VanillaTilt from 'vanilla-tilt';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { addToCart } from '../redux-slices/cartReducer';
 
 const Product = ({ product }) => {
   const dispatch = useDispatch();
   const [countToAdd, setCountToAdd] = useState(0);
   const [showCountIndicator, setShowCountIndicator] = useState(false);
   const { cartItems } = useSelector(state => state.cart);
+
+  // tilt image effect
+  const tiltRef = useRef(null);
+  useEffect(() => {
+    const titledElement = tiltRef.current;
+    VanillaTilt.init(titledElement, {
+      max: 6,
+      glare: true,
+      'max-glare': 0.2,
+      perspective: 1000,
+      scale: 1.05,
+      speed: 300,
+      transition: true,
+      axis: null,
+      reset: true,
+      easing: 'cubic-bezier(.03,.98,.52,.99)',
+    });
+  });
 
   const productQuantityInCart = cartItems.filter(
     item => item.product === product._id,
@@ -40,6 +59,7 @@ const Product = ({ product }) => {
       <Link to={`/product/${product._id}`}>
         <div className='image_wrapper'>
           <Card.Img
+            ref={tiltRef}
             src={product.image}
             variant='bottom'
             className='productImage'

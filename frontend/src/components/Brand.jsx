@@ -1,8 +1,8 @@
 import * as React from "react"
 
-function Icon(props) {
+function Icon({width, height,...props}) {
   return (
-    <svg width='8em' height='3em' viewBox='0 0 223 79' fill='none' {...props}>
+    <svg width='6em' height='2.5em' viewBox='0 0 223 79' fill='none' {...props}>
       <g filter='url(#prefix__filter0_d)'>
         <rect x={10} y={6} width={110} height={59} rx={25} fill='#95A2CE' />
         <rect

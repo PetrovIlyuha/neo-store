@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+import MediaQueries from '../hooks/useMediaQuery';
 
 const SearchBox = ({ history }) => {
   const [searchSequence, setSearchSequence] = useState('');
+  const {isSmallScreen, isMediumScreen} = MediaQueries();
 
   const performSearch = e => {
     e.preventDefault();
@@ -18,16 +20,22 @@ const SearchBox = ({ history }) => {
 
   return (
     <Form inline onSubmit={performSearch}>
-      <Form.Control
-        type='text'
-        name='searchTerm'
-        onChange={e => setSearchSequence(e.target.value)}
-        className='mr-sm-2 ml-sm-5'
-        placeholder='Search products...'
-        value={searchSequence}></Form.Control>
-      <Button type='submit' variant='outline-info' className='p-2'>
-        Search
-      </Button>
+    <Row className="searchForm">
+      <Col xs={8}>
+        <Form.Control
+          type='text'
+          name='searchTerm'
+          className="appBarSearchInput"
+          onChange={e => setSearchSequence(e.target.value)}
+          placeholder='Search products...'
+          value={searchSequence}></Form.Control>
+      </Col>
+      <Col xs={2}>
+        <Button type='submit' variant='info' className='appBarSearchBtn'>
+          Search
+        </Button>
+      </Col>
+    </Row>
     </Form>
   );
 };

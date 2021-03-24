@@ -1,0 +1,181 @@
+const products = [
+  {
+    name: "Airpods Wireless Bluetooth Headphones",
+    image: "/images/airpods.jpg",
+    description:
+      "Bluetooth technology lets you connect it with compatible devices wirelessly High-quality AAC audio offers immersive listening experience Built-in microphone allows you to take calls while working",
+    brand: "Apple",
+    category: "Electronics",
+    price: 89.99,
+    countInStock: 10,
+    rating: 4.5,
+    numReviews: 12,
+  },
+  {
+    name: "iPhone 11 Pro 256GB Memory",
+    image: "/images/phone.jpg",
+    description:
+      "Introducing the iPhone 11 Pro. A transformative triple-camera system that adds tons of capability without complexity. An unprecedented leap in battery life",
+    brand: "Apple",
+    category: "Electronics",
+    price: 599.99,
+    countInStock: 7,
+    rating: 4.0,
+    numReviews: 8,
+  },
+  {
+    name: "Cannon EOS 80D DSLR Camera",
+    image: "/images/camera.jpg",
+    description:
+      "Characterized by versatile imaging specs, the Canon EOS 80D further clarifies itself using a pair of robust focusing systems and an intuitive design",
+    brand: "Cannon",
+    category: "Electronics",
+    price: 929.99,
+    countInStock: 5,
+    rating: 3,
+    numReviews: 12,
+  },
+  {
+    name: "Sony Playstation 4 Pro White Version",
+    image: "/images/playstation.jpg",
+    description:
+      "The ultimate home entertainment center starts with PlayStation. Whether you are into gaming, HD movies, television, music",
+    brand: "Sony",
+    category: "Electronics",
+    price: 399.99,
+    countInStock: 11,
+    rating: 5,
+    numReviews: 12,
+  },
+  {
+    name: "Logitech G-Series Gaming Mouse",
+    image: "/images/mouse.jpg",
+    description:
+      "Get a better handle on your games with this Logitech LIGHTSYNC gaming mouse. The six programmable buttons allow customization for a smooth playing experience",
+    brand: "Logitech",
+    category: "Electronics",
+    price: 49.99,
+    countInStock: 7,
+    rating: 3.5,
+    numReviews: 10,
+  },
+  {
+    name: "Amazon Echo Dot 3rd Generation",
+    image: "/images/alexa.jpg",
+    description:
+      "Meet Echo Dot - Our most popular smart speaker with a fabric design. It is our most compact smart speaker that fits perfectly into small space",
+    brand: "Amazon",
+    category: "Electronics",
+    price: 29.99,
+    countInStock: 0,
+    rating: 4,
+    numReviews: 12,
+  },
+  {
+    name: "360fly - Panoramic 360° HD Video Camera - Black",
+    description:
+      "Only at Best Buy  This 360fly panoramic 360 degrees HD video camera features Wi-Fi, a Bluetooth LE interface and the included 360fly app (download required), so you can easily shoot, edit, replay and share recorded video footage using a compatible iOS or Android smartphone.",
+    brand: "360fly",
+    category: "Electronics",
+    price: 399.99,
+    countInStock: 20,
+    image: "/images/fly360.jpg",
+
+    rating: 5,
+    numReviews: 9,
+  },
+  {
+    name: "Apple iPhone 6 Plus 16GB",
+    description:
+      "iPhone 6 Plus isn't just bigger, it's better in every way. Larger yet thinner. More powerful, yet power efficient. It's a new generation of iPhone.",
+    brand: "Apple",
+    category: "phones",
+    price: 699.98,
+    countInStock: 100,
+    image: "/images/iphone6.jpg",
+    rating: 4,
+    numReviews: 230,
+  },
+  {
+    name: "Apple MacBook Pro 12GB Memory Black",
+    description:
+      "Apple Mac Pro ME253LL/A Desktop: Featuring an ultracompact design that keeps its high-performance components cool and quiet, this state-of-the-art computer provides advanced graphics, storage and memory for professional creative work. Expand your workstation with extra monitors and Bluetooth accessories using a variety of wired and wireless connectivity options.",
+    brand: "Apple",
+    category: "Computers",
+    price: 2999.99,
+    countInStock: 200,
+    image: "/images/macpro16.jpg",
+    rating: 4,
+    numReviews: 20,
+  },
+  {
+    name: "Apple MacBook Air 11.6 4GB 128GB",
+    description:
+      "MacBook Air features fifth-generation Intel Core processors with stunning graphics, all-day battery life*, ultrafast flash storage, and great built-in apps. It's thin, light and durable enough to take everywhere you go &#8212; and powerful enough to do everything once you get there.",
+    brand: "Apple",
+    category: "Computers",
+    price: 899.99,
+    countInStock: 80,
+    image: "https://cdn-demo.algolia.com/bestbuy/3827189_sb.jpg",
+    rating: 4,
+    numReviews: 10,
+  },
+  {
+    name: "Apple MacBook Pro with Retina 13.3 8GB 512GB",
+    description:
+      "With fifth-generation Intel Core processors, the latest graphics, and faster flash storage, the incredibly advanced MacBook Pro with Retina display moves even further ahead in performance and battery life.*  *Compared with the previous generation.",
+    brand: "Apple",
+    category: "Computers",
+    price: 1799.99,
+    countInStock: 10,
+    image: "https://cdn-demo.algolia.com/bestbuy/8532495_sb.jpg",
+    rating: 3,
+    numReviews: 23,
+  },
+  {
+    name: "Apple Magic Keyboard Silver",
+    description:
+      "The all-new Magic Keyboard has been enhanced to deliver more comfort and functionality than ever before. It includes a built-in rechargeable lithium-ion battery that charges fast, lasts about a  month or more between charges, and eliminates the need for disposable batteries. With the included Lightning to USB cable, you can charge your device and automatically pair it with any Mac.",
+    brand: "Apple",
+    category: "Mice & Keyboards",
+    price: 99.99,
+    image: "https://cdn-demo.algolia.com/bestbuy/4639101_rb.jpg",
+    rating: 5,
+    numReviews: 33,
+  },
+  {
+    name: "Apple Magic Mouse 2 Silver",
+    description:
+      "The all-new Magic Mouse 2 has been enhanced to deliver more comfort and functionality than ever before. It includes a built-in rechargeable lithium-ion battery that charges fast, lasts about a  month or more between charges, and eliminates the need for disposable batteries. With the included Lightning to USB cable, you can charge your device and automatically pair it with any Mac.",
+    brand: "Apple",
+    category: "Mice & Keyboards",
+    price: 79.99,
+    image: "https://cdn-demo.algolia.com/bestbuy/4639400_sb.jpg",
+    rating: 3,
+    numReviews: 104,
+  },
+  {
+    name: "Samsung Gear 2 Smartwatch 58.4mm",
+    description:
+      "Samsung Gear 2 Smartwatch: Pair this stylish watch with select Samsung phones or tablets to make calls, fire off texts and receive notifications right from your wrist. The bright touch screen makes it easy to shoot video on the go and track your fitness progress, or relax at home and surf channels.",
+    brand: "Samsung",
+    category: "Smartwatches",
+    price: 299.99,
+    image: "https://cdn-demo.algolia.com/bestbuy/5507018_sb.jpg",
+    rating: 4,
+    numReviews: 12,
+  },
+  {
+    name: "Samsung Gear Fit Fitness Watch",
+    description:
+      "Samsung Gear Fit Fitness Watch + Heart Rate: Monitor your exercise and sleep habits with this Samsung watch that features accelerometer, gyro and heart rate sensors to provide helpful fitness data. A Bluetooth 4.0 + LE interface allows pairing with select devices, so you can receive SNS, call, e-mail and app notifications.",
+    brand: "Samsung",
+    category: "Smartwatches",
+    price: 149.99,
+    image: "https://cdn-demo.algolia.com/bestbuy/5291009_sb.jpg",
+    rating: 3,
+    numReviews: 123,
+  },
+];
+
+export default products;

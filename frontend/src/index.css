@@ -9,10 +9,49 @@ main {
 .navbar {
   min-height: 100px;
   position: fixed;
-  width: 100%;
-  margin-bottom: 100px;
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 200px;
   top: 0;
+  background: linear-gradient(328.78deg, #030086 14.45%, #bd6177 84.36%),
+    linear-gradient(301.28deg, #209b4a 0%, #7000ff 100%),
+    radial-gradient(100% 138.56% at 100% 0%, #d50000 0%, #00ffe0 100%),
+    radial-gradient(100% 148.07% at 0% 0%, #d50000 0%, #00ffff 100%);
+  background-blend-mode: soft-light, overlay, difference, normal;
   z-index: 100;
+}
+
+.navAppBarCustom {
+  min-width: 100vw;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+@media screen and (max-width: 400px) {
+  .navAppBarCustom {
+    font-size: 0.7rem;
+  }
+  .searchForm {
+    width: 200px;
+  }
+  .appBarSearchBtn {
+    padding: 5px;
+    font-size: 0.8rem;
+    margin-top: 3px;
+  }
+  .appBarSearchInput {
+    font-size: 0.45rem;
+    padding-left: 5px;
+    height: 30px;
+    margin-left: 15px;
+    margin-top: 3px;
+  }
+  .appBarBrand {
+    max-width: 100px;
+  }
 }
 
 .nav-link {
@@ -53,7 +92,21 @@ footer {
   color: yellow;
   border-radius: 10px;
   clip-path: polygon(11% 0, 100% 0, 89% 100%, 0% 100%);
-  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  background: linear-gradient(55deg, #000850 0%, #000320 100%),
+    radial-gradient(100% 225% at 100% 0%, #ff6928 0%, #000000 100%),
+    linear-gradient(235deg, #bdff00 0%, #000000 100%),
+    linear-gradient(
+      180deg,
+      #002bdc 0%,
+      #002bdc 45%,
+      #2f4bff 45%,
+      #2f4bff 60%,
+      #00a6e7 60%,
+      #00a6e7 80%,
+      #ffe37f 80%,
+      #ffe37f 100%
+    );
+  background-blend-mode: screen, overlay, hard-light, normal;
   opacity: 0.75;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
   width: 30%;
@@ -164,6 +217,7 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 200;
 }
 
 /* Cart page */
@@ -370,19 +424,31 @@ footer {
 }
 
 .carousel-inner {
-  background: #8a2387; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to right,
-    #f27121,
-    #e94057,
-    #8a2387
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to right,
-    #f27121,
-    #e94057,
-    #8a2387
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(125deg, #fdff9c 0%, #0500ff 100%),
+    linear-gradient(180deg, #d3d3d3 0%, #161616 100%),
+    linear-gradient(
+      310deg,
+      #00f0ff 0%,
+      #00f0ff 20%,
+      #0017e3 calc(20% + 1px),
+      #0017e3 40%,
+      #000f8f calc(40% + 1px),
+      #000f8f 70%,
+      #00073f calc(70% + 1px),
+      #00073f 100%
+    ),
+    linear-gradient(
+      285deg,
+      #ffb6b9 0%,
+      #ffb6b9 35%,
+      #fae3d9 calc(35% + 1px),
+      #fae3d9 45%,
+      #bbded6 calc(45% + 1px),
+      #bbded6 65%,
+      #61c0bf calc(65% + 1px),
+      #61c0bf 100%
+    );
+  background-blend-mode: overlay, overlay, exclusion, normal;
 }
 
 .carousel .img-fluid {
@@ -394,19 +460,27 @@ footer {
 }
 
 .carousel-caption h2 {
-  color: yellow;
+  color: black;
   background: transparent !important;
   font-size: 1.4rem;
+  font-weight: 700;
   margin-bottom: 1rem;
 }
 
 .carousel img {
-  height: 300px;
-  padding: 40px;
+  height: 340px;
+  padding: 10px;
   margin: 40px;
-  border-radius: 50px;
+  border-radius: 35px;
+  box-shadow: 4px 8px 18px rgba(0, 0, 0, 0.2);
 }
 
 .carousel a {
   margin: 0 auto;
+}
+
+.homeFilterBtn {
+  border-radius: 5px;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
+  color: '#99E34A';
 }
